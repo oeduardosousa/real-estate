@@ -54,9 +54,9 @@ export const pageTransition = {
  * so exactly one of the three is true at any time.
  */
 export const MEDIA = {
-  full: "(min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+  full: "(min-width: 1024px) and (min-height: 560px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
   light:
-    "(prefers-reduced-motion: no-preference) and (not ((min-width: 1024px) and (hover: hover) and (pointer: fine)))",
+    "(prefers-reduced-motion: no-preference) and (not ((min-width: 1024px) and (min-height: 560px) and (hover: hover) and (pointer: fine)))",
   reduced: "(prefers-reduced-motion: reduce)",
 } as const;
 
@@ -64,5 +64,3 @@ export const OS_REDUCED_QUERY = MEDIA.reduced;
 
 export type MotionMode = "full" | "light" | "reduced";
 
-/** Pins and scrubbed effects also need a tall enough viewport. */
-export const MIN_PIN_HEIGHT = 560;

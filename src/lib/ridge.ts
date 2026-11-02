@@ -88,3 +88,19 @@ export function ridgeFill(shape: RidgeShape = "main"): string {
 export function ridgeSky(shape: RidgeShape = "main"): string {
   return `${smooth(SHAPES[shape])} L${RIDGE_WIDTH} 0 L0 0 Z`;
 }
+
+/**
+ * `clip-path: polygon()` that gives a frame the ridge-shaped top edge used by the story photographs.
+ * `depth` is how far (in % of the frame height) the crest dips from the top edge.
+ */
+export function ridgeClipPolygon(depth = 14): string {
+  const ys = MAIN.map(([, y]) => y);
+  const min = Math.min(...ys);
+  const max = Math.max(...ys);
+  const top = MAIN.map(([x, y]) => {
+    const px = ((x / RIDGE_WIDTH) * 100).toFixed(2);
+    const py = (((y - min) / (max - min)) * depth).toFixed(2);
+    return `${px}% ${py}%`;
+  });
+  return `polygon(${top.join(", ")}, 100% 100%, 0% 100%)`;
+}
