@@ -33,7 +33,7 @@ Visitors browse listings, open property detail pages and use demo-only contact a
 - The company, people, listings and numbers are fictional and marked as such. The footer carries a "Concept project, fictional company" note.
 - Planned scope per WORKFLOW.md: landing page, listings index (filters in URL params), property detail, about/team, contact, 404 and legal placeholders; optional favorites/compare, mortgage calculator with disclaimer, visit-scheduling demo, interactive map.
 - Performance budget: LCP < 2.5s, CLS < 0.1, INP < 200ms on mobile.
-- Undecided: agency name and positioning, city/market, site language(s), and which wow features are approved. Settled in the brief interview.
+- Decided in the brief interview (see BRIEF.md): fictional agency "Curral Residências", modern-luxury positioning, Belo Horizonte and metropolitan area, PT-BR only, 12 listings, no 3D.
 
 ## Brand Commitments
 
