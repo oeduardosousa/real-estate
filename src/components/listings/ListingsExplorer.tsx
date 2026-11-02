@@ -180,7 +180,7 @@ export function ListingsExplorer() {
         <ul className="results-grid">
           {results.map((listing, index) => (
             <Reveal as="li" key={listing.id} delay={(index % 3) * 0.07}>
-              <ListingCard listing={listing} index={listing.id - 1} />
+              <ListingCard listing={listing} index={listing.id - 1} headingLevel={2} />
             </Reveal>
           ))}
         </ul>

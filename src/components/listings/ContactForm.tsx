@@ -1,5 +1,6 @@
 "use client";
 
+import { flushSync } from "react-dom";
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/Button";
@@ -31,8 +32,10 @@ export function ContactForm({ listingTitle, agentName }: { listingTitle: string;
       const key = issue.path[0] as keyof Errors;
       next[key] ??= issue.message;
     });
-    setErrors(next);
-    event.currentTarget.querySelector<HTMLElement>("[aria-invalid='true']")?.focus();
+    const form = event.currentTarget;
+    // Render the errors first, otherwise there is no invalid field in the DOM to move focus to.
+    flushSync(() => setErrors(next));
+    form.querySelector<HTMLElement>("[aria-invalid='true']")?.focus();
   };
 
   if (sent) {

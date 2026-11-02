@@ -1012,7 +1012,7 @@
 .team-grid {
   display: grid;
   gap: clamp(0.75rem, 1.6vw, 1.25rem);
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .team-lead {
   grid-column: span 2;
@@ -1056,7 +1056,8 @@
   font-size: clamp(3.5rem, 2rem + 5vw, 7rem);
   line-height: 1;
   letter-spacing: -0.03em;
-  color: var(--s-near);
+  /* Darkened from the ridge tone so the large initials reach 3:1 on every pastel. */
+  color: color-mix(in srgb, var(--s-near) 68%, var(--ink));
 }
 .person-orb {
   position: absolute;

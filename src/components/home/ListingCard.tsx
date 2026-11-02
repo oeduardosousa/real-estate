@@ -9,7 +9,17 @@ import { formatPrice, formatSpecs, purposeLabel } from "@/lib/format";
  * One link, so the whole card is the target. On hover the image breathes in, its ridges drift apart
  * and the round arrow turns.
  */
-export function ListingCard({ listing, index }: { listing: ListingCore; index: number }) {
+export function ListingCard({
+  listing,
+  index,
+  headingLevel = 3,
+}: {
+  listing: ListingCore;
+  index: number;
+  /** 2 where no h2 precedes the cards (the listings index), 3 under a section heading. */
+  headingLevel?: 2 | 3;
+}) {
+  const Title = `h${headingLevel}` as const;
   return (
     <article className="lcard">
       <TransitionLink href={`/imoveis/${listing.slug}`} className="lcard-link">
@@ -31,7 +41,7 @@ export function ListingCard({ listing, index }: { listing: ListingCore; index: n
               {listing.neighborhood}
               {listing.city !== "Belo Horizonte" && ` · ${listing.city}`}
             </p>
-            <h3 className="t-title lcard-title">{listing.title}</h3>
+            <Title className="t-title lcard-title">{listing.title}</Title>
             <p className="t-small num">{formatSpecs(listing)}</p>
           </div>
           <p className="lcard-price num">{formatPrice(listing)}</p>

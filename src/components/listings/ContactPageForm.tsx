@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { flushSync } from "react-dom";
 import { z } from "zod";
 import { Button } from "@/components/ui/Button";
 import { team } from "@/data";
@@ -9,7 +10,7 @@ const SUBJECTS = ["Comprar", "Vender", "Alugar", "Investir", "Outro assunto"] as
 
 const schema = z.object({
   name: z.string().trim().min(2, "Informe seu nome."),
-  whatsapp: z.string().refine((value) => /^[1-9]{2}9?d{8}$/.test(value.replace(/D/g, "")), "Informe um WhatsApp com DDD."),
+  whatsapp: z.string().refine((value) => /^[1-9]{2}9?\d{8}$/.test(value.replace(/\D/g, "")), "Informe um WhatsApp com DDD."),
   subject: z.enum(SUBJECTS, "Escolha um assunto."),
   message: z.string().trim().min(10, "Escreva ao menos uma frase."),
 });
@@ -19,7 +20,7 @@ type Errors = Partial<Record<Field, string>>;
 
 /** Formats digits as a Brazilian phone while typing: (31) 91234-5678. */
 function maskPhone(value: string) {
-  const digits = value.replace(/D/g, "").slice(0, 11);
+  const digits = value.replace(/\D/g, "").slice(0, 11);
   if (digits.length <= 2) return digits;
   const split = digits.length > 10 ? 7 : 6;
   const head = digits.slice(2, split);
@@ -47,7 +48,8 @@ export function ContactPageForm() {
       const key = issue.path[0] as Field;
       next[key] ??= issue.message;
     });
-    setErrors(next);
+    // Render the errors first, otherwise there is no invalid field in the DOM to move focus to.
+    flushSync(() => setErrors(next));
     form.querySelector<HTMLElement>("[aria-invalid='true']")?.focus();
   };
 

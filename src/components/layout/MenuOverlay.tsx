@@ -33,6 +33,9 @@ export function MenuOverlay({ open, onClose }: MenuOverlayProps) {
     lenis?.stop();
     const previous = document.documentElement.style.overflow;
     document.documentElement.style.overflow = "hidden";
+    // Everything behind the sheet is out of reach while it is open (focus cannot wander into the page).
+    const behind = Array.from(document.querySelectorAll<HTMLElement>('#conteudo, .footer-wrap'));
+    behind.forEach((el) => el.setAttribute('inert', ''));
     const focusTimer = window.setTimeout(() => firstLink.current?.focus(), 120);
 
     const onKey = (event: KeyboardEvent) => {
@@ -44,6 +47,7 @@ export function MenuOverlay({ open, onClose }: MenuOverlayProps) {
       window.clearTimeout(focusTimer);
       document.removeEventListener("keydown", onKey);
       document.documentElement.style.overflow = previous;
+      behind.forEach((el) => el.removeAttribute('inert'));
       lenis?.start();
     };
   }, [open, onClose]);

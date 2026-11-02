@@ -30,7 +30,7 @@ export function Story() {
     const words = gsap.utils.toArray<HTMLElement>("[data-w]", text);
     gsap.fromTo(
       words,
-      { opacity: 0.16 },
+      { opacity: 0.5 },
       {
         opacity: 1,
         ease: "none",

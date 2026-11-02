@@ -126,10 +126,10 @@ p {
   color: var(--ink);
 }
 
+/* The ring follows each element's own radius: pills stay pills when focused. */
 :focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
-  border-radius: 6px;
 }
 .on-dark :focus-visible {
   outline-color: var(--peach);
@@ -409,4 +409,24 @@ p {
 :root[data-motion="full"] .wr-eager .wr-w > span {
   animation: word-rise 0.8s var(--ease) both;
   animation-delay: calc(var(--i, 0) * 0.045s + var(--d, 0) * 1s);
+}
+
+/* ---------- interaction hygiene ---------- */
+:root {
+  /* Light-only site: native controls and scrollbars follow it. */
+  color-scheme: light;
+}
+a,
+button,
+input,
+select,
+textarea,
+summary,
+[role="button"] {
+  /* No double-tap zoom delay on controls. */
+  touch-action: manipulation;
+}
+.menu {
+  /* The open sheet never scrolls the page behind it. */
+  overscroll-behavior: contain;
 }
