@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { bruno, helena, tiago } from "../model/fixtures";
 
+const rafael = { id: "rafael-mendonca", role: "diretoria" } as const;
+
 function fakeLocalStorage(): Storage & { data: Map<string, string> } {
   const data = new Map<string, string>();
   return {
@@ -102,13 +104,34 @@ describe("removeMember", () => {
     expect(t.getPersona("paula-nunes")).toBeUndefined();
   });
 
-  it("refuses the seed team, people with listings and non-directors", async () => {
+  it("removes seed people too, and a reset brings them back", async () => {
+    const t = await fresh();
+    expect(t.removeMember(helena, "camila-drummond", 0).ok).toBe(true);
+    expect(t.getPersona("camila-drummond")).toBeUndefined();
+    expect(t.getOwnerCandidates().some((p) => p.id === "camila-drummond")).toBe(false);
+    const reloaded = await fresh();
+    expect(reloaded.getTeam()).toEqual([]);
+    expect(reloaded.getPersona("camila-drummond")).toBeUndefined();
+    reloaded.resetTeam();
+    expect(reloaded.getPersona("camila-drummond")).toBeDefined();
+  });
+
+  it("does not hand a removed seed id to a new person", async () => {
+    const t = await fresh();
+    t.removeMember(helena, "camila-drummond", 0);
+    const added = t.addMember(helena, { name: "Camila Drummond", role: "corretor", title: "x" });
+    expect(added.ok && added.value.id).toBe("camila-drummond-2");
+  });
+
+  it("refuses yourself, the last director, people with listings and non-directors", async () => {
     const t = await fresh();
     t.addMember(helena, { name: "Paula Nunes", role: "corretor", title: "Corretora" });
-    expect(t.removeMember(helena, "camila-drummond", 0)).toEqual({ ok: false, error: "seed_member" });
+    expect(t.removeMember(helena, "helena-vasconcelos", 0)).toEqual({ ok: false, error: "self" });
     expect(t.removeMember(helena, "paula-nunes", 2)).toEqual({ ok: false, error: "has_listings" });
     expect(t.removeMember(bruno, "paula-nunes", 0)).toEqual({ ok: false, error: "forbidden" });
     expect(t.removeMember(helena, "ninguem", 0)).toEqual({ ok: false, error: "not_found" });
+    expect(t.removeMember(helena, "rafael-mendonca", 0).ok).toBe(true);
+    expect(t.removeMember(rafael, "helena-vasconcelos", 0)).toEqual({ ok: false, error: "last_director" });
   });
 });
 

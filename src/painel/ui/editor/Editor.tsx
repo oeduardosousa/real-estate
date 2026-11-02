@@ -113,6 +113,9 @@ export function Editor({ listing, persona }: { listing: PanelListing; persona: P
           <p className="panel-meta">
             <StatusBadge status={listing.status} />
             <span className="panel-muted">Responsável: {owner?.name ?? "—"}</span>
+            <Link href={`/painel/imoveis/historico?id=${listing.id}`} className="panel-row-link">
+              Histórico
+            </Link>
           </p>
         </div>
         <StatusActions listing={listing} persona={persona} beforeAction={flush} />

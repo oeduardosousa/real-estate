@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { allPersonas, isSeedPersona, setExtraPersonas } from "../model/personas";
+import { allPersonas, isSeedPersona, personas, setExtraPersonas } from "../model/personas";
 import { can } from "../model/permissions";
 import { ROLES, type Actor, type Persona, type Role } from "../model/types";
 import { slugify } from "../model/workflow";
@@ -7,7 +7,15 @@ import { readJSON, removeItem, writeJSON } from "./storage";
 
 export const TEAM_KEY = "curral-painel:team";
 
-export type TeamError = "forbidden" | "name_invalid" | "title_invalid" | "name_taken" | "not_found" | "seed_member" | "has_listings";
+export type TeamError =
+  | "forbidden"
+  | "name_invalid"
+  | "title_invalid"
+  | "name_taken"
+  | "not_found"
+  | "self"
+  | "last_director"
+  | "has_listings";
 export type TeamResult<T> = { ok: true; value: T } | { ok: false; error: TeamError };
 
 export const NAME_MIN = 3;
@@ -19,9 +27,12 @@ const stored = z.object({
   members: z.array(
     z.object({ id: z.string(), name: z.string(), role: z.enum(ROLES), title: z.string() }),
   ),
+  removed: z.array(z.string()).default([]),
 });
 
 let members: readonly Persona[] = [];
+/** Seed people removed from the team. They stay out of the lists but the seed itself is untouched. */
+let removedSeed: readonly string[] = [];
 let loaded = false;
 const listeners = new Set<() => void>();
 
@@ -31,16 +42,19 @@ export function ensureTeamLoaded(): void {
   loaded = true;
   const value = readJSON(TEAM_KEY, (raw) => {
     const parsed = stored.safeParse(raw);
-    return parsed.success ? parsed.data.members : null;
+    return parsed.success ? parsed.data : null;
   });
-  members = value ?? [];
-  setExtraPersonas(members);
+  members = value?.members ?? [];
+  removedSeed = value?.removed ?? [];
+  setExtraPersonas(members, removedSeed);
 }
 
-function commit(next: readonly Persona[]): void {
-  members = next;
-  setExtraPersonas(next);
-  writeJSON(TEAM_KEY, { version: 1, members: next });
+function commit(next: readonly Persona[], removed: readonly string[] = removedSeed): void {
+  // A new array every time, so `useSyncExternalStore` sees a change even when only `removed` moved.
+  members = [...next];
+  removedSeed = removed;
+  setExtraPersonas(next, removed);
+  writeJSON(TEAM_KEY, { version: 1, members: next, removed });
   listeners.forEach((listener) => listener());
 }
 
@@ -62,7 +76,8 @@ export function subscribeTeam(listener: () => void): () => void {
 
 function uniqueId(name: string): string {
   const base = slugify(name) || "pessoa";
-  const taken = new Set(allPersonas().map((persona) => persona.id));
+  // Seed ids stay taken after their people are removed, so an old id never points at someone new.
+  const taken = new Set([...personas, ...members].map((persona) => persona.id));
   let id = base;
   for (let n = 2; taken.has(id); n += 1) id = `${base}-${n}`;
   return id;
@@ -89,7 +104,10 @@ export function addMember(
   return { ok: true, value: person };
 }
 
-/** Removes a person added in the panel. The seed team stays, and so does anyone who still owns listings. */
+/**
+ * Removes someone from the team. Not yourself, not the last director, and not anyone who still owns
+ * listings (reassign those first). Seed people are hidden rather than deleted, so a reset brings them back.
+ */
 export function removeMember(
   actor: Actor,
   id: string,
@@ -97,18 +115,24 @@ export function removeMember(
 ): TeamResult<Persona> {
   if (typeof window === "undefined" || !can(actor, "manage_team")) return { ok: false, error: "forbidden" };
   ensureTeamLoaded();
-  if (isSeedPersona(id)) return { ok: false, error: "seed_member" };
-  const person = members.find((member) => member.id === id);
+  if (id === actor.id) return { ok: false, error: "self" };
+  const person = allPersonas().find((candidate) => candidate.id === id);
   if (!person) return { ok: false, error: "not_found" };
+  if (person.role === "diretoria" && allPersonas().filter((p) => p.role === "diretoria").length <= 1) {
+    return { ok: false, error: "last_director" };
+  }
   if (ownedListingCount > 0) return { ok: false, error: "has_listings" };
-  commit(members.filter((member) => member.id !== id));
+
+  if (isSeedPersona(id)) commit(members, [...removedSeed, id]);
+  else commit(members.filter((member) => member.id !== id));
   return { ok: true, value: person };
 }
 
 export function resetTeam(): void {
   removeItem(TEAM_KEY);
   members = [];
+  removedSeed = [];
   loaded = true;
-  setExtraPersonas([]);
+  setExtraPersonas([], []);
   listeners.forEach((listener) => listener());
 }

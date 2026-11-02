@@ -2,7 +2,7 @@
 
 import { useId, useState, type FormEvent } from "react";
 import { can } from "../model/permissions";
-import { allPersonas, isSeedPersona, roleLabels, roleSummaries } from "../model/personas";
+import { allPersonas, roleLabels, roleSummaries } from "../model/personas";
 import { ROLES, type Persona, type Role } from "../model/types";
 import { addMember, removeMember, NAME_MAX, TITLE_MAX, type TeamError } from "../store/team";
 import { usePanelState, useSession, useTeam } from "./hooks";
@@ -25,8 +25,9 @@ const teamErrors: Record<TeamError, string> = {
   title_invalid: "Informe o cargo.",
   name_taken: "Já existe alguém com esse nome na equipe.",
   not_found: "Essa pessoa não está mais na equipe.",
-  seed_member: "A equipe original da demonstração não pode ser removida.",
-  has_listings: "Antes de remover, passe os imóveis dessa pessoa para outro responsável.",
+  self: "Você não pode remover a si mesmo. Troque de persona e peça a outra pessoa da Diretoria.",
+  last_director: "A empresa precisa de pelo menos uma pessoa na Diretoria.",
+  has_listings: "Antes de remover, passe os imóveis dessa pessoa para outro responsável, no editor do imóvel.",
 };
 
 function AddForm({ role, onDone }: { role: Role; onDone: (name: string) => void }) {
@@ -159,7 +160,7 @@ export function Team() {
         <h1 className="panel-title">Equipe</h1>
         <p className="panel-lead">
           {manages
-            ? "Quem trabalha na Curral, por função. Você pode adicionar pessoas à equipe e remover as que adicionou."
+            ? "Quem trabalha na Curral, por função. Você pode cadastrar pessoas novas e remover quem saiu da equipe."
             : "Quem trabalha na Curral, por função. Só a Diretoria adiciona ou remove pessoas."}
         </p>
       </header>
@@ -182,7 +183,7 @@ export function Team() {
               {manages && adding !== role && (
                 <button
                   type="button"
-                  className="panel-button"
+                  className="panel-button panel-button-primary"
                   onClick={() => {
                     setAdding(role);
                     setNotice(null);
@@ -209,7 +210,7 @@ export function Team() {
                   key={person.id}
                   person={person}
                   listingCount={countFor(person.id)}
-                  canRemove={manages && !isSeedPersona(person.id)}
+                  canRemove={manages && person.id !== persona.id}
                   onRemove={remove}
                 />
               ))}

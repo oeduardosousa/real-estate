@@ -9,13 +9,14 @@ import { roleLabels } from "../model/personas";
 import { signOut } from "../store/session";
 import { isPersistent } from "../store/store";
 import { DemoReset } from "./DemoReset";
-import { useSession } from "./hooks";
+import { usePanelState, useSession } from "./hooks";
 import { LoginScreen } from "./LoginScreen";
 
 const PANEL_LINKS = [
-  { label: "Visão geral", href: "/painel", exact: true },
-  { label: "Imóveis", href: "/painel/imoveis", exact: false },
-  { label: "Equipe", href: "/painel/equipe", exact: false },
+  { label: "Visão geral", href: "/painel", exact: true, role: null },
+  { label: "Imóveis", href: "/painel/imoveis", exact: false, role: null },
+  { label: "Revisão", href: "/painel/revisao", exact: false, role: "diretoria" },
+  { label: "Equipe", href: "/painel/equipe", exact: false, role: null },
 ] as const;
 
 /**
@@ -25,6 +26,8 @@ const PANEL_LINKS = [
 export function PanelShell({ children }: { children: ReactNode }) {
   const persona = useSession();
   const pathname = usePathname();
+  const { listings } = usePanelState();
+  const waiting = listings.filter((listing) => listing.status === "Em revisão").length;
 
   return (
     <div className="panel">
@@ -44,11 +47,17 @@ export function PanelShell({ children }: { children: ReactNode }) {
           <div className="panel-top-end">
             {persona && (
               <nav aria-label="Painel" className="panel-nav">
-                {PANEL_LINKS.map((link) => {
+                {PANEL_LINKS.filter((link) => link.role === null || link.role === persona.role).map((link) => {
                   const current = link.exact ? pathname === link.href : pathname.startsWith(link.href);
                   return (
                     <Link key={link.href} href={link.href} aria-current={current ? "page" : undefined}>
                       {link.label}
+                      {link.href === "/painel/revisao" && waiting > 0 && (
+                        <span className="panel-nav-count">
+                          {waiting}
+                          <span className="visually-hidden"> aguardando</span>
+                        </span>
+                      )}
                     </Link>
                   );
                 })}

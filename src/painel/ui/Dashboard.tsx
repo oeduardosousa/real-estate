@@ -7,6 +7,7 @@ import { getPersona, roleLabels } from "../model/personas";
 import { STATUSES, type PanelListing, type Persona } from "../model/types";
 import { ago, editorHref } from "./format";
 import { usePanelState, useSession } from "./hooks";
+import { reviewHref } from "./ReviewQueue";
 import { StatusBadge } from "./StatusBadge";
 
 const scopeText = {
@@ -17,13 +18,23 @@ const scopeText = {
 
 const decimal = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
 
-function ListingRow({ listing, now, showOwner }: { listing: PanelListing; now: Date; showOwner: boolean }) {
+function ListingRow({
+  listing,
+  now,
+  showOwner,
+  href,
+}: {
+  listing: PanelListing;
+  now: Date;
+  showOwner: boolean;
+  href: string;
+}) {
   const owner = getPersona(listing.ownerId);
   return (
     <li className="panel-row">
       <div>
         <p className="panel-row-title">
-          <Link href={editorHref(listing.id)} className="panel-row-link">
+          <Link href={href} className="panel-row-link">
             {listing.title}
           </Link>
         </p>
@@ -46,12 +57,15 @@ function Queue({
   listings,
   now,
   showOwner,
+  reviewing = false,
 }: {
   title: string;
   empty: string;
   listings: PanelListing[];
   now: Date;
   showOwner: boolean;
+  /** Rows open the review screen instead of the editor. */
+  reviewing?: boolean;
 }) {
   return (
     <section className="panel-card" aria-labelledby="queue-title">
@@ -63,7 +77,13 @@ function Queue({
       ) : (
         <ul className="panel-rows">
           {listings.map((listing) => (
-            <ListingRow key={listing.id} listing={listing} now={now} showOwner={showOwner} />
+            <ListingRow
+              key={listing.id}
+              listing={listing}
+              now={now}
+              showOwner={showOwner}
+              href={reviewing ? reviewHref(listing.id) : editorHref(listing.id)}
+            />
           ))}
         </ul>
       )}
@@ -83,6 +103,7 @@ function roleQueue(persona: Persona, all: PanelListing[], mine: PanelListing[], 
         listings={all.filter((l) => l.status === "Em revisão").sort(oldestFirst)}
         now={now}
         showOwner
+        reviewing
       />
     );
   }

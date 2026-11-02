@@ -3,6 +3,7 @@ import { FeaturedProperties } from "@/components/home/FeaturedProperties";
 import { Hero } from "@/components/home/Hero";
 import { Marquee } from "@/components/home/Marquee";
 import { Neighborhoods } from "@/components/home/Neighborhoods";
+import { Reviews } from "@/components/home/Reviews";
 import { Numbers } from "@/components/home/Numbers";
 import { Services } from "@/components/home/Services";
 import { Story } from "@/components/home/Story";
@@ -15,6 +16,7 @@ export default function HomePage() {
       <Marquee />
       <Story />
       <FeaturedProperties />
+      <Reviews />
       <Services />
       <Numbers />
       <Neighborhoods />

@@ -29,14 +29,17 @@ export const personas: readonly Persona[] = [
 
 /** People added from the Equipe screen. Filled by the team store; always empty on the server. */
 let extras: readonly Persona[] = [];
+/** Seed people removed from the team in the panel. */
+let hidden: ReadonlySet<string> = new Set();
 
-export function setExtraPersonas(list: readonly Persona[]): void {
+export function setExtraPersonas(list: readonly Persona[], removedSeedIds: readonly string[] = []): void {
   extras = list;
+  hidden = new Set(removedSeedIds);
 }
 
 /** The seed team plus anyone added in the panel. */
 export function allPersonas(): readonly Persona[] {
-  return [...personas, ...extras];
+  return [...personas.filter((persona) => !hidden.has(persona.id)), ...extras];
 }
 
 export function isSeedPersona(id: string): boolean {
