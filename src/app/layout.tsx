@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Cursor } from "@/components/layout/Cursor";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { Loader } from "@/components/layout/Loader";
 import { PageContent } from "@/components/layout/PageTransition";
 import { Providers } from "@/components/providers/Providers";
 import { site } from "@/data";
@@ -16,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F1F1EC",
+  themeColor: "#F5F0E8",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -31,11 +29,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Ir para o conteúdo
         </a>
         <Providers>
-          <Loader />
           <Header />
           <PageContent>{children}</PageContent>
           <Footer />
-          <Cursor />
         </Providers>
       </body>
     </html>

@@ -1,58 +1,50 @@
 "use client";
 
-import { useRef, type ElementType, type ReactNode } from "react";
-import { duration, ease } from "@/lib/motion/config";
-import { gsap } from "@/lib/motion/gsap";
-import { useMotion } from "@/lib/motion/use-motion";
+import { useEffect, useRef, type ElementType, type ReactNode } from "react";
+
+/**
+ * Adds `.is-in` to an element the first time it scrolls into view. The CSS (base.css) does the motion,
+ * so there is no animation library on this path. Reduced motion and no-JS never hide the element.
+ */
+export function useInView<T extends HTMLElement>(margin = "0px 0px -8% 0px") {
+  const ref = useRef<T>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (document.documentElement.dataset.motion !== "full" || !("IntersectionObserver" in window)) {
+      el.classList.add("is-in");
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        el.classList.add("is-in");
+        observer.disconnect();
+      },
+      { rootMargin: margin, threshold: 0.12 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [margin]);
+
+  return ref;
+}
 
 interface RevealProps {
   as?: ElementType;
   className?: string;
   children: ReactNode;
-  /** Seconds. Used to stagger siblings (cards 70ms apart). */
+  /** Seconds. Staggers siblings. */
   delay?: number;
   id?: string;
 }
 
-/**
- * Block reveal for body copy and small groups: fades and rises 12px as one block (never line by line),
- * once, at `top 88%`. Reduced motion: a 200ms fade. Visible without JavaScript.
- */
+/** Fades and rises a block once, when it enters the viewport. */
 export function Reveal({ as: Tag = "div", className = "", children, delay = 0, id }: RevealProps) {
-  const ref = useRef<HTMLElement>(null);
-
-  useMotion(({ mode }) => {
-    const el = ref.current;
-    if (!el) return;
-
-    if (mode === "reduced") {
-      el.classList.remove("pre-reveal");
-      gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: duration.slow, ease: ease.linear, clearProps: "opacity" });
-      return;
-    }
-
-    gsap.fromTo(
-      el,
-      { opacity: 0, y: mode === "light" ? 24 : 12 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: mode === "light" ? 0.6 : duration.slow,
-        delay,
-        ease: ease.cinema,
-        scrollTrigger: { trigger: el, start: "top 88%", once: true },
-        onStart: () => el.classList.remove("pre-reveal"),
-        onComplete: () => gsap.set(el, { clearProps: "opacity,transform" }),
-      },
-    );
-
-    return () => {
-      el.classList.add("pre-reveal");
-    };
-  });
-
+  const ref = useInView<HTMLElement>();
   return (
-    <Tag ref={ref} id={id} className={`pre-reveal ${className}`}>
+    <Tag ref={ref} id={id} className={`reveal ${className}`} style={delay ? { ["--d" as string]: delay } : undefined}>
       {children}
     </Tag>
   );

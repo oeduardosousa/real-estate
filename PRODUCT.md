@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Next.js (App Router) + TypeScript + Tailwind CSS + GSAP (ScrollTrigger, SplitText, Flip) + Lenis + Motion, static typed data, hosted free on Vercel (Hobby). Three.js / React Three Fiber only if a 3D moment is approved later. Confirmed by the user; final stack is documented in BRIEF.md.
+Next.js (App Router) + TypeScript + plain CSS + GSAP (ScrollTrigger, SplitText, Flip) + Lenis + Motion, static typed data, hosted free on Vercel (Hobby). Three.js / React Three Fiber only if a 3D moment is approved later. Confirmed by the user; final stack is documented in BRIEF.md.
 
 ## Users
 

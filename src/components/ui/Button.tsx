@@ -1,17 +1,20 @@
 "use client";
 
 import { useRef, type ComponentProps, type ReactNode } from "react";
+import { ArrowUpRight } from "lucide-react";
 import { TransitionLink } from "@/components/layout/TransitionLink";
 import { duration, ease } from "@/lib/motion/config";
 import { gsap } from "@/lib/motion/gsap";
 import { useMotion } from "@/lib/motion/use-motion";
 
-type Variant = "primary" | "secondary" | "on-noite";
+type Variant = "primary" | "soft" | "light";
 
 interface CommonProps {
   variant?: Variant;
-  /** Pointer within 80px pulls the button up to 12px. Primary CTAs only, fine pointers only. */
+  /** Pointer nearby pulls the button a few pixels toward it. Fine pointers only. */
   magnetic?: boolean;
+  /** Shows a small arrow that turns on hover. */
+  arrow?: boolean;
   className?: string;
   children: ReactNode;
 }
@@ -19,16 +22,12 @@ interface CommonProps {
 type LinkButtonProps = CommonProps & { href: string } & Omit<ComponentProps<typeof TransitionLink>, "href" | "className" | "children">;
 type NativeButtonProps = CommonProps & { href?: undefined } & Omit<ComponentProps<"button">, "className" | "children">;
 
-const MAGNET_RANGE = 80;
-const MAGNET_PULL = 12;
-const MAGNET_STRENGTH = 0.25;
+const MAGNET_RANGE = 70;
+const MAGNET_PULL = 10;
 
-/**
- * Square, 52px, Label type (DESIGN.md "Buttons"). The hover fill sweep and the press scale are CSS
- * (.btn in globals.css, fine pointers only). The magnetic pull is GSAP quickTo, full mode only.
- */
+/** Pill button. Hover fill and press scale are CSS (.btn); the magnetic pull is GSAP quickTo, desktop only. */
 export function Button(props: LinkButtonProps | NativeButtonProps) {
-  const { variant = "primary", magnetic = false, className = "", children, ...rest } = props;
+  const { variant = "primary", magnetic = false, arrow = false, className = "", children, ...rest } = props;
   const ref = useRef<HTMLElement>(null);
 
   useMotion(
@@ -36,18 +35,17 @@ export function Button(props: LinkButtonProps | NativeButtonProps) {
       const el = ref.current;
       if (!magnetic || mode !== "full" || !el) return;
 
-      const moveX = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3.out" });
-      const moveY = gsap.quickTo(el, "y", { duration: 0.5, ease: "power3.out" });
+      const moveX = gsap.quickTo(el, "x", { duration: 0.6, ease: "power3.out" });
+      const moveY = gsap.quickTo(el, "y", { duration: 0.6, ease: "power3.out" });
       const clamp = gsap.utils.clamp(-MAGNET_PULL, MAGNET_PULL);
 
       const onMove = (event: PointerEvent) => {
         const rect = el.getBoundingClientRect();
         const dx = event.clientX - (rect.left + rect.width / 2);
         const dy = event.clientY - (rect.top + rect.height / 2);
-        const within =
-          Math.abs(dx) < rect.width / 2 + MAGNET_RANGE && Math.abs(dy) < rect.height / 2 + MAGNET_RANGE;
-        moveX(within ? clamp(dx * MAGNET_STRENGTH) : 0);
-        moveY(within ? clamp(dy * MAGNET_STRENGTH) : 0);
+        const within = Math.abs(dx) < rect.width / 2 + MAGNET_RANGE && Math.abs(dy) < rect.height / 2 + MAGNET_RANGE;
+        moveX(within ? clamp(dx * 0.22) : 0);
+        moveY(within ? clamp(dy * 0.22) : 0);
       };
       const release = () => {
         moveX(0);
@@ -66,7 +64,12 @@ export function Button(props: LinkButtonProps | NativeButtonProps) {
   );
 
   const classes = `btn btn-${variant} ${className}`;
-  const content = <span className="btn-label">{children}</span>;
+  const content = (
+    <>
+      <span className="btn-label">{children}</span>
+      {arrow && <ArrowUpRight className="btn-arrow" size={18} strokeWidth={1.8} aria-hidden="true" />}
+    </>
+  );
 
   if ("href" in rest && rest.href !== undefined) {
     const { href, ...linkRest } = rest as LinkButtonProps;

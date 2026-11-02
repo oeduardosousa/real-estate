@@ -1,7 +1,7 @@
+import { ArrowUpRight } from "lucide-react";
+import { Heading } from "@/components/motion/Heading";
 import { Reveal } from "@/components/motion/Reveal";
-import { SplitHeading } from "@/components/motion/SplitHeading";
 import { Button } from "@/components/ui/Button";
-import { SectionLabel } from "@/components/ui/SectionLabel";
 import { team } from "@/data";
 
 const fullName = (id: string) => team.find((member) => member.id === id)?.name ?? "";
@@ -11,53 +11,57 @@ const services = [
   {
     title: "Comprar",
     text: "Casas, apartamentos e coberturas escolhidos com critério em Belo Horizonte e Nova Lima.",
+    tint: "peach",
   },
   {
     title: "Vender",
     text: "Para quem quer anunciar um imóvel com cuidado, clareza e uma apresentação à altura.",
+    tint: "sage",
   },
   {
     title: "Alugar",
     text: `Locação e relacionamento, com o acompanhamento de ${fullName("marina-alvarenga")}.`,
+    tint: "sky",
   },
   {
     title: "Investir",
     text: `Imóveis pensados como investimento, com a orientação de ${fullName("bruno-teixeira")}.`,
+    tint: "butter",
   },
 ] as const;
 
-/**
- * Services as an asymmetric list rather than a row of identical cards: the headline names all four,
- * hairline rows explain them, and one action closes the section.
- */
+/** Four soft tiles. Each glows under the pointer; the whole set rises in with a short stagger. */
 export function Services() {
   return (
-    <section id="servicos" aria-labelledby="servicos-titulo" className="bg-bg py-section">
-      <div className="container-page grid gap-12 lg:grid-cols-12 lg:gap-x-6">
-        <div className="lg:col-span-8">
-          <SectionLabel>Serviços</SectionLabel>
-          <SplitHeading id="servicos-titulo" className="mt-8 text-display">
-            Comprar, vender, alugar, investir.
-          </SplitHeading>
-        </div>
-
-        <ul className="lg:col-span-8 lg:col-start-5">
-          {services.map((service, index) => (
-            <Reveal
-              as="li"
-              key={service.title}
-              delay={index * 0.07}
-              className="grid gap-3 border-t border-line py-8 sm:grid-cols-[1fr_1.5fr] sm:gap-8"
-            >
-              <h3 className="text-title">{service.title}</h3>
-              <p className="max-w-measure text-fg-secondary">{service.text}</p>
+    <section id="servicos" aria-labelledby="servicos-titulo" className="section services">
+      <div className="container">
+        <div className="section-head">
+          <div>
+            <Reveal>
+              <p className="eyebrow">
+                <span className="dot" /> Serviços
+              </p>
             </Reveal>
-          ))}
-          <li className="border-t border-line pt-10">
-            <Button href="/contato" variant="secondary">
+            <Heading id="servicos-titulo" className="t-display section-title" text="Comprar, vender, *alugar*, investir." />
+          </div>
+          <Reveal className="section-aside">
+            <Button href="/contato" variant="soft" arrow>
               Falar com a equipe
             </Button>
-          </li>
+          </Reveal>
+        </div>
+
+        <ul className="services-grid">
+          {services.map((service, index) => (
+            <Reveal as="li" key={service.title} delay={index * 0.08}>
+              <div className={`tile tile--${service.tint}`} data-spot>
+                <span className="tile-index num">0{index + 1}</span>
+                <ArrowUpRight className="tile-arrow" size={26} strokeWidth={1.4} aria-hidden="true" />
+                <h3 className="t-headline tile-title">{service.title}</h3>
+                <p className="tile-text">{service.text}</p>
+              </div>
+            </Reveal>
+          ))}
         </ul>
       </div>
     </section>

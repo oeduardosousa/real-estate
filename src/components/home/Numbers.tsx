@@ -1,31 +1,40 @@
+import { Heading } from "@/components/motion/Heading";
 import { Reveal } from "@/components/motion/Reveal";
-import { SectionLabel } from "@/components/ui/SectionLabel";
 import { stats } from "@/data";
+import { CountUp } from "./CountUp";
 
 /**
- * The number row on a noite chapter. Figures are set in Newsreader (lining, tabular) at Numeral size.
- * A 2 x 2 grid keeps "R$ 1,2 bi" on one line at that size. The note states the figures are fictional.
+ * The numbers on a dark rounded panel with two glows drifting behind them. Figures count up when they
+ * enter the viewport. The note states the figures are fictional.
  */
 export function Numbers() {
   return (
-    <section id="numeros" aria-labelledby="numeros-titulo" className="theme-noite bg-bg py-section text-fg">
-      <div className="container-page">
-        <SectionLabel>
-          <span id="numeros-titulo">Em números</span>
-        </SectionLabel>
+    <section id="numeros" aria-labelledby="numeros-titulo" className="numbers-wrap">
+      <div className="numbers on-dark" data-ambient>
+        <div className="numbers-glow numbers-glow--a" aria-hidden="true" />
+        <div className="numbers-glow numbers-glow--b" aria-hidden="true" />
 
-        <dl className="mt-16 grid gap-x-6 gap-y-16 sm:grid-cols-2 lg:mt-24">
-          {stats.map((stat, index) => (
-            <Reveal key={stat.label} delay={index * 0.07} className="flex flex-col-reverse border-t border-line pt-6">
-              <dt className="mt-4 text-body-lg text-fg-secondary">{stat.label}</dt>
-              <dd className="type-numeral tabular-nums">{stat.value}</dd>
-            </Reveal>
-          ))}
-        </dl>
+        <div className="container numbers-inner">
+          <Reveal>
+            <p className="eyebrow">
+              <span className="dot" /> Em números
+            </p>
+          </Reveal>
+          <Heading id="numeros-titulo" className="t-display section-title" text="Uma casa de cada vez, *desde 2009*." />
 
-        <p className="mt-16 max-w-measure text-fg-muted">
-          Números fictícios de um projeto conceitual.
-        </p>
+          <dl className="numbers-grid">
+            {stats.map((stat, index) => (
+              <Reveal key={stat.label} delay={index * 0.08} className="stat">
+                <dt className="stat-label">{stat.label}</dt>
+                <dd className="stat-value num">
+                  <CountUp value={stat.value} />
+                </dd>
+              </Reveal>
+            ))}
+          </dl>
+
+          <p className="numbers-note">Números fictícios de um projeto conceitual.</p>
+        </div>
       </div>
     </section>
   );

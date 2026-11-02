@@ -154,7 +154,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
       <div
         ref={panelRef}
         aria-hidden="true"
-        className="theme-noite pointer-events-none invisible fixed inset-0 z-transition bg-bg"
+        className="page-curtain"
       />
     </PageTransitionContext.Provider>
   );
@@ -164,7 +164,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
 export function PageContent({ children }: { children: ReactNode }) {
   const context = usePageTransition();
   return (
-    <main id="conteudo" ref={context?.contentRef} tabIndex={-1} className="outline-none">
+    <main id="conteudo" ref={context?.contentRef} tabIndex={-1} className="page-main">
       {children}
     </main>
   );

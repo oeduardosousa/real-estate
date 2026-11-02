@@ -23,16 +23,17 @@ src/
     ui/           Shared presentational components
   data/           Typed static data: listings, team, neighborhoods, site facts
   lib/
-    fonts.ts      next/font setup (Hanken Grotesk, Newsreader)
+    fonts.ts      next/font setup (Manrope, Instrument Serif)
     motion/       GSAP registration, motion config, useMotion, scroll helpers, reduced-motion state
   styles/
-    tokens.css    Raw design tokens as CSS custom properties (palette, roles, layout, motion)
-    theme.css     Tailwind theme that names those tokens and defines the type scale, radii, shadow, easings
+    base.css      Tokens (palette, radii, easings), reset, type scale, buttons, reveal primitives
+    layout.css    Header, menu sheet, footer, page curtain
+    home.css      Home sections and all ambient motion keyframes
 ```
 
 ## Motion conventions
 
 - Create animation with `useMotion` (`src/lib/motion/use-motion.ts`): it wraps `gsap.matchMedia()` and `useGSAP`, hands you `mode` (`full`, `light` or `reduced`) and reverts everything on breakpoint change, on the animation switch and on unmount.
-- Animate `transform` and `opacity` only. Durations and easings come from `src/lib/motion/config.ts` (GSAP) or the `duration-*` / `ease-*` utilities (CSS).
+- Animate `transform` and `opacity` only. Durations and easings come from `src/lib/motion/config.ts` (GSAP) or the `--ease` tokens in base.css (CSS).
 - Every animated element must have a visible end state without JavaScript. Reduced motion is the site switch (`data-motion="reduced"` on `<html>`, persisted in `localStorage`) or the OS setting.
 - `SplitText` and `Flip` load on demand through `loadSplitText()` and `loadFlip()`.

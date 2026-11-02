@@ -56,15 +56,15 @@ Listings 1–6 are featured and need 6+ images each; 7–12 need at least 3. Fin
 - **Filters, favorites, compare:** filters by type, purpose, price, bedrooms, area and neighborhood, with sorting and URL-param state; favorites and compare (max 3) in localStorage; skeleton and empty states.
 - **Interactive map** (MapLibre with a free tile source) with pins linked to cards.
 - **Mortgage calculator** (Price/SAC choice optional) with a clear disclaimer that it is a simulation.
-- Also: smooth scroll, text and image reveals, parallax, horizontal scroll for featured properties, page transitions, magnetic buttons and custom cursor on fine pointers only.
+- Also: smooth scroll, text and image reveals, parallax, horizontal scroll for featured properties, page transitions, magnetic buttons (no custom cursor).
 - **Out of scope:** 3D (no Three.js), language switch, visit scheduling, blog, neighborhood pages, any backend.
 
 ## Content and assets
 Photography decides the result. Needed: 8–12 hero-grade exteriors/interiors, a consistent color grade, license-checked or AI-rendered. Originals stay in git-ignored `raw-assets/`; only optimized files are committed. No assets exist yet.
 
 ## Stack (approved)
-Next.js (App Router) + TypeScript + Tailwind CSS + GSAP (ScrollTrigger, SplitText, Flip) via `@gsap/react` + Lenis + Motion, static typed data in `src/data`, MapLibre for the map, zod for demo-form validation.
-**Why:** static export keeps hosting free and fast; App Router gives per-property static pages with metadata; Tailwind maps cleanly to DESIGN.md tokens; GSAP handles pinned and scroll-linked work, Motion handles small UI transitions. No server runtime is required.
+Next.js (App Router) + TypeScript + plain CSS + GSAP (ScrollTrigger, SplitText, Flip) via `@gsap/react` + Lenis + Motion, static typed data in `src/data`, MapLibre for the map, zod for demo-form validation.
+**Why:** static export keeps hosting free and fast; App Router gives per-property static pages with metadata; GSAP handles pinned and scroll-linked work, Motion handles small UI transitions. No server runtime is required.
 
 ## Deployment
 Vercel Hobby (free) from the GitHub repo `oeduardosousa/real-estate`, default `*.vercel.app` URL; custom domain optional later. No environment variables. The user pushes and deploys; Claude never does.

@@ -5,14 +5,6 @@ const nextConfig: NextConfig = {
   output: "export",
   // The static export has no image optimizer; optimized AVIF/WebP files are committed instead.
   images: { unoptimized: true },
-  turbopack: {
-    rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
-      },
-    },
-  },
 };
 
 export default nextConfig;

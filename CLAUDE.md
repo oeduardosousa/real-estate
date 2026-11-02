@@ -7,7 +7,7 @@
 - Use emil-design-eng for animations and interactions; use Impeccable for design and UI audits.
 - No backend, database or payments. Forms are demo-only: validated (zod), success state, nothing stored or sent.
 - Motion: GSAP via useGSAP with cleanup; animate transform/opacity only; respect prefers-reduced-motion (gsap.matchMedia).
-- Lighter motion variants on mobile/touch; one Lenis instance synced with ScrollTrigger; custom cursor on fine pointers only.
+- Lighter motion variants on mobile/touch; one Lenis instance synced with ScrollTrigger; no custom cursor (removed by the user).
 - Performance budget (mobile): LCP < 2.5s, CLS < 0.1, INP < 200ms; lazy-load heavy assets.
 - Footer carries a small "Concept project, fictional company" note; fictional testimonials are labeled.
 - Site copy is PT-BR; code, comments and docs are English. Invent no facts outside BRIEF.md.

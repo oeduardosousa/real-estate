@@ -1,19 +1,19 @@
-import { Hanken_Grotesk, Newsreader } from "next/font/google";
+import { Instrument_Serif, Manrope } from "next/font/google";
 
-/** Display and body. Variable, so weights 300/400/500 share one file. */
-export const hankenGrotesk = Hanken_Grotesk({
+/** Body and UI. Variable, so every weight shares one file. */
+export const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-hanken",
+  variable: "--font-sans",
   display: "swap",
 });
 
-/** Prices, statistics and pull quotes only. Variable with the optical-size axis. */
-export const newsreader = Newsreader({
+/** Display only: headlines, prices and numerals. The italic carries the accent words. */
+export const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-newsreader",
+  weight: "400",
   style: ["normal", "italic"],
-  axes: ["opsz"],
+  variable: "--font-serif",
   display: "swap",
 });
 
-export const fontVariables = `${hankenGrotesk.variable} ${newsreader.variable}`;
+export const fontVariables = `${manrope.variable} ${instrumentSerif.variable}`;

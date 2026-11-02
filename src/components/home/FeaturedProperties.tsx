@@ -1,32 +1,38 @@
 import { TransitionLink } from "@/components/layout/TransitionLink";
+import { Heading } from "@/components/motion/Heading";
 import { Reveal } from "@/components/motion/Reveal";
-import { SplitHeading } from "@/components/motion/SplitHeading";
-import { SectionLabel } from "@/components/ui/SectionLabel";
 import { featuredListings } from "@/data";
-import { FeaturedTrack } from "./FeaturedTrack";
+import { ListingCard } from "./ListingCard";
 
-/**
- * Featured properties (listings 1–6 from BRIEF.md). The "Ver todos os imóveis" link sits before the
- * pinned track so keyboard and screen-reader users can skip past it (DESIGN.md "Accessibility").
- */
+/** Listings 1–6 from BRIEF.md on an editorial grid: sizes and offsets vary so the page never reads as a table. */
 export function FeaturedProperties() {
   return (
-    <section id="destaques" aria-labelledby="destaques-titulo" className="bg-bg pt-section">
-      <div className="container-page grid gap-8 pb-16 lg:grid-cols-12 lg:gap-x-6 lg:pb-24">
-        <div className="lg:col-span-8">
-          <SectionLabel>Imóveis em destaque</SectionLabel>
-          <SplitHeading id="destaques-titulo" className="mt-8 max-w-[14ch] text-display">
-            Seis imóveis para olhar com calma.
-          </SplitHeading>
+    <section id="destaques" aria-labelledby="destaques-titulo" className="section featured">
+      <div className="container">
+        <div className="section-head">
+          <div>
+            <Reveal>
+              <p className="eyebrow">
+                <span className="dot" /> Imóveis em destaque
+              </p>
+            </Reveal>
+            <Heading id="destaques-titulo" className="t-display section-title" text="Seis imóveis para *olhar com calma*." />
+          </div>
+          <Reveal className="section-aside">
+            <TransitionLink href="/imoveis" className="link">
+              Ver todos os imóveis
+            </TransitionLink>
+          </Reveal>
         </div>
-        <Reveal className="flex items-end lg:col-span-4 lg:col-start-9">
-          <TransitionLink href="/imoveis" className="type-label inline-flex min-h-touch items-center">
-            <span className="link-quiet">Ver todos os imóveis</span>
-          </TransitionLink>
-        </Reveal>
-      </div>
 
-      <FeaturedTrack listings={featuredListings} />
+        <ul className="featured-grid">
+          {featuredListings.map((listing, index) => (
+            <Reveal as="li" key={listing.id} className="featured-item" delay={(index % 3) * 0.08}>
+              <ListingCard listing={listing} index={index} />
+            </Reveal>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }
