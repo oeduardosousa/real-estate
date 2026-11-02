@@ -1,0 +1,76 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+@import "../styles/tokens.css";
+@import "../styles/theme.css";
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-bg font-sans text-body text-fg antialiased;
+    min-height: 100svh;
+    overflow-x: clip;
+  }
+
+  /* Headings balance their lines; running text stays within the reading measure. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  /* Focus is always visible: 2px ring, 3px offset, square. Colour follows the active theme. */
+  :focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-offset);
+  }
+
+  /* Anchors land below the fixed header. */
+  [id] {
+    scroll-margin-top: calc(var(--header-height) + 1rem);
+  }
+
+  button,
+  [role="button"],
+  summary {
+    cursor: pointer;
+  }
+
+  /* Reduced motion keeps colour and short opacity changes; movement and long transitions go. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  /* First focusable element on every page; jumps past the header to the content landmark. */
+  .skip-link {
+    @apply type-label fixed left-gutter top-4 z-loader -translate-y-[200%] bg-grafite px-6 py-4 text-pedra;
+    transition: translate var(--duration-fast) var(--ease-out);
+  }
+
+  .skip-link:focus-visible {
+    @apply translate-y-0;
+    outline-color: var(--canga-claro);
+  }
+
+  /* Centred content column with the page gutter. */
+  .container-page {
+    @apply mx-auto w-full max-w-content px-gutter;
+  }
+}

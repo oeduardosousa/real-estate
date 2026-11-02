@@ -1,0 +1,141 @@
+/*
+ * Curral Residências — design tokens
+ * Source of truth: DESIGN.md (frontmatter and Motion section). Keep both in sync.
+ * Raw values live here as CSS custom properties; globals.css maps them into the Tailwind
+ * theme (@theme inline) so utilities and plain CSS/GSAP read the same values.
+ */
+
+:root {
+  /* Palette: primitives */
+  --pedra: #f1f1ec;
+  --pedra-raised: #e7e8e1;
+  --pedra-deep: #d3d5cb;
+  --grafite: #1b1f1c;
+  --grafite-soft: #4a4f47;
+  --serra-muted: #62675d;
+  --canga: #9c3f24;
+  --canga-deep: #7a2f1a;
+  --noite: #0f1519;
+  --noite-raised: #182027;
+  --nevoa: #ecede6;
+  --nevoa-muted: #a3aba6;
+  --canga-claro: #e58a64;
+
+  /* Sky stages (home story only) */
+  --sky-alvorada: #ebcfb2;
+  --sky-dia: #b9c6cc;
+  --sky-entardecer: #6b4f5c;
+  --sky-noite: var(--noite);
+
+  /* Status */
+  --success: #2f6045;
+  --warning: #7a5a0c;
+  --error: #a3322a;
+  --success-on-noite: #7fc59a;
+  --warning-on-noite: #e3b94f;
+  --error-on-noite: #f08a80;
+
+  /* Semantic roles: light theme (default, "pedra") */
+  --bg: var(--pedra);
+  --surface: var(--pedra-raised);
+  --surface-strong: var(--pedra-deep);
+  --fg: var(--grafite);
+  --fg-secondary: var(--grafite-soft);
+  --fg-muted: var(--serra-muted);
+  --line: rgb(27 31 28 / 0.14);
+  --accent: var(--canga);
+  --accent-pressed: var(--canga-deep);
+  --focus: var(--grafite);
+  --status-success: var(--success);
+  --status-warning: var(--warning);
+  --status-error: var(--error);
+
+  /* Type scale, radius, shadow and easings are defined once in theme.css (@theme static). */
+  --measure-body: 65ch;
+
+  /* Layout */
+  --gutter: clamp(1.25rem, 5vw, 5rem);
+  --column-gap: 16px;
+  --section-space: clamp(5rem, 12vw, 12rem);
+  --content-max: 1600px;
+  --header-height: 72px;
+  --touch-target: 44px;
+  --control-height: 52px;
+  --field-height: 56px;
+
+  /* Shape */
+  --hairline: 1px solid var(--line);
+  --focus-ring: 2px solid var(--focus);
+  --focus-offset: 3px;
+
+  /* Motion: durations */
+  --duration-instant: 100ms;
+  --duration-fast: 160ms;
+  --duration-base: 240ms;
+  --duration-moderate: 400ms;
+  --duration-slow: 700ms;
+  --duration-cinematic: 1200ms;
+  --duration-epic: 1800ms;
+
+  /* Motion: stagger (easings live in theme.css; GSAP equivalents in src/lib/motion/config.ts) */
+  --stagger-line: 60ms;
+  --stagger-word: 35ms;
+  --stagger-card: 70ms;
+  --stagger-menu: 40ms;
+
+  /* Stacking */
+  --z-header: 50;
+  --z-compare: 60;
+  --z-overlay: 80;
+  --z-transition: 90;
+  --z-loader: 100;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --column-gap: 24px;
+  }
+}
+
+/* Dark chapter ("noite"): applied per section, never from the OS setting */
+.theme-noite {
+  --bg: var(--noite);
+  --surface: var(--noite-raised);
+  --surface-strong: var(--noite-raised);
+  --fg: var(--nevoa);
+  --fg-secondary: var(--nevoa-muted);
+  --fg-muted: var(--nevoa-muted);
+  --line: rgb(236 237 230 / 0.16);
+  --accent: var(--canga-claro);
+  --accent-pressed: var(--canga-claro);
+  --focus: var(--canga-claro);
+  --status-success: var(--success-on-noite);
+  --status-warning: var(--warning-on-noite);
+  --status-error: var(--error-on-noite);
+}
+
+/*
+ * Reduced motion: movement off, opacity and colour kept short.
+ * Also applied when the in-site "Animações: reduzidas" switch sets data-motion="reduced" on <html>.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-slow: 200ms;
+    --duration-cinematic: 200ms;
+    --duration-epic: 200ms;
+    --stagger-line: 0ms;
+    --stagger-word: 0ms;
+    --stagger-card: 0ms;
+    --stagger-menu: 0ms;
+  }
+}
+
+:root[data-motion="reduced"] {
+  --duration-slow: 200ms;
+  --duration-cinematic: 200ms;
+  --duration-epic: 200ms;
+  --stagger-line: 0ms;
+  --stagger-word: 0ms;
+  --stagger-card: 0ms;
+  --stagger-menu: 0ms;
+}
