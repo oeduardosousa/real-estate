@@ -3,14 +3,15 @@
 import { useId, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ownerCandidates, roleLabels } from "../model/personas";
+import { getOwnerCandidates, roleLabels } from "../model/personas";
 import { createListing } from "../store/store";
 import { editorHref, errorText } from "./format";
-import { useSession } from "./hooks";
+import { useSession, useTeam } from "./hooks";
 
 /** Creates an empty draft from a title, then opens the editor. Back-office picks the owner; others own it. */
 export function NewListing() {
   const persona = useSession();
+  useTeam();
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [ownerId, setOwnerId] = useState("");
@@ -67,7 +68,7 @@ export function NewListing() {
             <label htmlFor={ownerIdField}>Responsável</label>
             <select id={ownerIdField} value={ownerId} onChange={(event) => setOwnerId(event.target.value)}>
               <option value="">{persona.role === "diretoria" ? "Eu mesmo" : "Escolha uma pessoa"}</option>
-              {ownerCandidates.map((candidate) => (
+              {getOwnerCandidates().map((candidate) => (
                 <option key={candidate.id} value={candidate.id}>
                   {candidate.name} ({roleLabels[candidate.role]})
                 </option>

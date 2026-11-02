@@ -22,30 +22,37 @@
   text-align: center;
 }
 
-/* top bar */
+/* top bar: brand left, view switch centred, navigation and person on the right */
 .panel-top {
   border-bottom: 1px solid var(--line);
   background: var(--paper);
 }
 .panel-top-inner {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "brand end"
+    "switch switch";
   align-items: center;
-  justify-content: space-between;
   gap: 0.75rem 1.5rem;
   max-width: var(--max);
   margin-inline: auto;
   padding: 0.75rem var(--gutter);
 }
 .panel-brand {
+  grid-area: brand;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-family: var(--font-display);
   font-size: 1.4rem;
   line-height: 1;
   letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 .panel-brand-tag {
-  margin-left: 0.4rem;
-  padding: 0.15rem 0.55rem;
+  padding: 0.2rem 0.55rem;
   border-radius: 999px;
   background: var(--ink);
   color: var(--paper);
@@ -53,19 +60,30 @@
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.06em;
+  line-height: 1;
   text-transform: uppercase;
-  vertical-align: 0.2em;
 }
-.panel-top-actions {
+.panel-top-switch {
+  grid-area: switch;
+  justify-self: center;
+}
+.panel-top-end {
+  grid-area: end;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem 1.25rem;
+  justify-content: flex-end;
+  gap: 0.5rem 1.25rem;
 }
 .panel-user {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--line);
+}
+.panel-user .panel-avatar {
+  width: 2.25rem;
+  height: 2.25rem;
 }
 .panel-user-text {
   display: flex;
@@ -75,6 +93,34 @@
 .panel-user-name {
   font-size: 0.9375rem;
   font-weight: 600;
+  white-space: nowrap;
+}
+@media (max-width: 1023px) {
+  .panel-top-inner {
+    grid-template-areas:
+      "brand brand"
+      "switch end";
+    grid-template-columns: auto 1fr;
+  }
+  .panel-top-switch {
+    justify-self: start;
+  }
+  .panel-top-end {
+    flex-wrap: wrap;
+  }
+  .panel-user {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .panel-user-text {
+    display: none;
+  }
+}
+@media (min-width: 1024px) {
+  .panel-top-inner {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "brand switch end";
+  }
 }
 
 /* page */
@@ -112,6 +158,7 @@
 /* controls */
 .panel-button {
   min-height: 2.5rem;
+  white-space: nowrap;
   padding: 0 1rem;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -382,6 +429,7 @@
 }
 .panel-nav a {
   display: inline-flex;
+  white-space: nowrap;
   align-items: center;
   min-height: 2.5rem;
   padding: 0 0.9rem;
@@ -844,4 +892,160 @@ a.panel-button {
   font-size: 0.875rem;
   color: var(--ink-2);
   list-style: disc;
+}
+
+/* ---------- team ---------- */
+.panel-team-section {
+  margin-top: 2.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+.panel-team-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1rem;
+}
+.panel-team-form {
+  max-width: 44rem;
+  margin-bottom: 1rem;
+}
+.panel-member-list {
+  display: grid;
+  gap: 0.75rem;
+}
+@media (min-width: 720px) {
+  .panel-member-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.panel-member {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+}
+.panel-member-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+}
+.panel-member .panel-button {
+  flex: none;
+}
+
+/* ---------- view curtain: covers the swap between client and company view ---------- */
+.view-curtain {
+  position: fixed;
+  inset: -80px 0;
+  z-index: 200;
+  border-radius: 50% / 80px;
+  background: var(--night);
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(100%);
+}
+.view-curtain[data-state="cover"] {
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition: transform 0.34s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.view-curtain[data-state="lift"] {
+  visibility: visible;
+  transform: translateY(-100%);
+  transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* ---------- entrance motion: same easing and rise as the client reveals ---------- */
+@keyframes panel-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes panel-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+:root[data-motion="full"] .panel-top {
+  animation: panel-drop 0.6s var(--ease) both;
+}
+/* Each screen re-mounts on a route change, so these replay per screen. */
+:root[data-motion="full"] .panel-main > * > header,
+:root[data-motion="full"] .panel-login > * {
+  animation: panel-rise 0.8s var(--ease) both;
+}
+:root[data-motion="full"] .panel-stat,
+:root[data-motion="full"] .panel-card,
+:root[data-motion="full"] .panel-team-section,
+:root[data-motion="full"] .panel-persona-group,
+:root[data-motion="full"] .panel-table-wrap,
+:root[data-motion="full"] .panel-filters,
+:root[data-motion="full"] .panel-toolbar,
+:root[data-motion="full"] .panel-step-body {
+  animation: panel-rise 0.8s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 60ms + 120ms);
+}
+:root[data-motion="full"] .panel-stat:nth-child(1) { --i: 0; }
+:root[data-motion="full"] .panel-stat:nth-child(2) { --i: 1; }
+:root[data-motion="full"] .panel-stat:nth-child(3) { --i: 2; }
+:root[data-motion="full"] .panel-stat:nth-child(4) { --i: 3; }
+:root[data-motion="full"] .panel-stat:nth-child(5) { --i: 2; }
+:root[data-motion="full"] .panel-stat:nth-child(6) { --i: 3; }
+:root[data-motion="full"] .panel-stat:nth-child(7) { --i: 4; }
+:root[data-motion="full"] .panel-stat:nth-child(8) { --i: 5; }
+:root[data-motion="full"] .panel-columns > :nth-child(1),
+:root[data-motion="full"] .panel-team-section:nth-of-type(1),
+:root[data-motion="full"] .panel-persona-group:nth-of-type(1) { --i: 4; }
+:root[data-motion="full"] .panel-columns > :nth-child(2),
+:root[data-motion="full"] .panel-team-section:nth-of-type(2),
+:root[data-motion="full"] .panel-persona-group:nth-of-type(2) { --i: 5; }
+:root[data-motion="full"] .panel-team-section:nth-of-type(3),
+:root[data-motion="full"] .panel-persona-group:nth-of-type(3) { --i: 6; }
+:root[data-motion="full"] .panel-rows > li,
+:root[data-motion="full"] .panel-member,
+:root[data-motion="full"] .panel-persona-list > li {
+  animation: panel-rise 0.7s var(--ease) both;
+  animation-delay: calc(var(--j, 0) * 40ms + 300ms);
+}
+:root[data-motion="full"] .panel-rows > li:nth-child(2),
+:root[data-motion="full"] .panel-member:nth-child(2),
+:root[data-motion="full"] .panel-persona-list > li:nth-child(2) { --j: 1; }
+:root[data-motion="full"] .panel-rows > li:nth-child(3),
+:root[data-motion="full"] .panel-member:nth-child(3),
+:root[data-motion="full"] .panel-persona-list > li:nth-child(3) { --j: 2; }
+:root[data-motion="full"] .panel-rows > li:nth-child(n + 4),
+:root[data-motion="full"] .panel-member:nth-child(n + 4),
+:root[data-motion="full"] .panel-persona-list > li:nth-child(n + 4) { --j: 3; }
+
+/* Hover lift on cards the user can act on, like the client listing cards. */
+.panel-persona,
+.panel-member {
+  transition:
+    border-color 0.2s var(--ease),
+    translate 0.3s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .panel-persona:hover,
+  .panel-member:hover {
+    translate: 0 -2px;
+  }
 }

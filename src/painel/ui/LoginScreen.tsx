@@ -1,11 +1,13 @@
 "use client";
 
-import { personas, roleLabels, roleSummaries } from "../model/personas";
+import { allPersonas, roleLabels, roleSummaries } from "../model/personas";
 import { ROLES } from "../model/types";
 import { signIn } from "../store/session";
+import { useTeam } from "./hooks";
 
 /** Demo login: pick a fictional team member. There is no password and nothing is sent anywhere. */
 export function LoginScreen() {
+  useTeam();
   return (
     <div className="panel-login">
       <h1 className="panel-title">Entrar no painel</h1>
@@ -21,7 +23,7 @@ export function LoginScreen() {
           </h2>
           <p className="panel-muted">{roleSummaries[role]}</p>
           <ul className="panel-persona-list">
-            {personas
+            {allPersonas()
               .filter((persona) => persona.role === role)
               .map((persona) => (
                 <li key={persona.id}>

@@ -72,6 +72,8 @@ export function Header() {
         <div className="site-header-bar">
           <Wordmark />
 
+          <ViewSwitch current="cliente" className="site-header-switch" />
+
           <nav aria-label="Principal" className="site-nav">
             {navLinks.map((link) => {
               const current = pathname === link.href;
@@ -86,7 +88,6 @@ export function Header() {
                 </TransitionLink>
               );
             })}
-            <ViewSwitch current="cliente" />
             <Button href="/contato" arrow className="site-nav-cta">
               Falar com a equipe
             </Button>

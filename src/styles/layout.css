@@ -96,8 +96,16 @@
   min-height: 2.75rem;
 }
 @media (min-width: 1024px) {
+  .site-header-bar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+  }
+  .site-header-switch {
+    justify-self: center;
+  }
   .site-nav {
     display: flex;
+    justify-self: end;
   }
   .menu-button {
     display: none !important;
@@ -417,8 +425,10 @@
     background: rgb(29 27 24 / 0.07);
   }
 }
-.site-nav .view-switch {
-  margin-left: 0.5rem;
+@media (max-width: 1023px) {
+  .site-header-switch {
+    display: none;
+  }
 }
 .on-dark .view-switch {
   border-color: rgb(255 250 242 / 0.2);

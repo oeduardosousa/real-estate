@@ -124,10 +124,15 @@ export function Dashboard() {
 
   return (
     <div className="panel-dashboard">
-      <header className="panel-heading">
-        <p className="panel-eyebrow">{roleLabels[persona.role]}</p>
-        <h1 className="panel-title">Olá, {firstName}</h1>
-        <p className="panel-lead">{scopeText[persona.role]}</p>
+      <header className="panel-heading panel-heading-row">
+        <div>
+          <p className="panel-eyebrow">{roleLabels[persona.role]}</p>
+          <h1 className="panel-title">Olá, {firstName}</h1>
+          <p className="panel-lead">{scopeText[persona.role]}</p>
+        </div>
+        <Link href="/painel/imoveis/novo" className="panel-button panel-button-primary">
+          Novo imóvel
+        </Link>
       </header>
 
       <section aria-labelledby="stats-title">

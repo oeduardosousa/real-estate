@@ -15,6 +15,7 @@ import { LoginScreen } from "./LoginScreen";
 const PANEL_LINKS = [
   { label: "Visão geral", href: "/painel", exact: true },
   { label: "Imóveis", href: "/painel/imoveis", exact: false },
+  { label: "Equipe", href: "/painel/equipe", exact: false },
 ] as const;
 
 /**
@@ -38,23 +39,26 @@ export function PanelShell({ children }: { children: ReactNode }) {
             {site.name} <span className="panel-brand-tag">Painel</span>
           </Link>
 
-          {persona && (
-            <nav aria-label="Painel" className="panel-nav">
-              {PANEL_LINKS.map((link) => {
-                const current = link.exact ? pathname === link.href : pathname.startsWith(link.href);
-                return (
-                  <Link key={link.href} href={link.href} aria-current={current ? "page" : undefined}>
-                    {link.label}
-                  </Link>
-                );
-              })}
-            </nav>
-          )}
+          <ViewSwitch current="empresa" className="panel-top-switch" />
 
-          <div className="panel-top-actions">
-            <ViewSwitch current="empresa" />
+          <div className="panel-top-end">
+            {persona && (
+              <nav aria-label="Painel" className="panel-nav">
+                {PANEL_LINKS.map((link) => {
+                  const current = link.exact ? pathname === link.href : pathname.startsWith(link.href);
+                  return (
+                    <Link key={link.href} href={link.href} aria-current={current ? "page" : undefined}>
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+            )}
             {persona && (
               <div className="panel-user">
+                <span className="panel-avatar" aria-hidden="true">
+                  {persona.name.charAt(0)}
+                </span>
                 <span className="panel-user-text">
                   <span className="panel-user-name">{persona.name}</span>
                   <span className="panel-muted">{roleLabels[persona.role]}</span>

@@ -5,7 +5,7 @@ import {
   findEdge,
   transitionRequiresComment,
 } from "./permissions";
-import { ownerCandidates } from "./personas";
+import { getOwnerCandidates } from "./personas";
 import type {
   ActivityEntry,
   Actor,
@@ -136,7 +136,7 @@ export function applyReassign(
   clock: Clock,
 ): Result<Change> {
   if (!can(actor, "reassign", listing)) return fail("forbidden");
-  if (!ownerCandidates.some((persona) => persona.id === newOwnerId)) return fail("invalid_owner");
+  if (!getOwnerCandidates().some((persona) => persona.id === newOwnerId)) return fail("invalid_owner");
   if (newOwnerId === listing.ownerId) return fail("no_changes");
 
   return {
@@ -188,7 +188,7 @@ export function applyCreate(
   else if (requestedOwner) ownerId = requestedOwner;
   else if (actor.role === "backoffice") return fail("owner_required");
   else ownerId = actor.id;
-  if (!ownerCandidates.some((persona) => persona.id === ownerId)) return fail("invalid_owner");
+  if (!getOwnerCandidates().some((persona) => persona.id === ownerId)) return fail("invalid_owner");
 
   const base = slugify(input.title) || "imovel";
   const taken = new Set(existing.map((item) => item.slug));

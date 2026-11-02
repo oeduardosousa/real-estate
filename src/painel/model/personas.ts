@@ -27,11 +27,27 @@ export const personas: readonly Persona[] = [
   { id: "larissa-coelho", name: "Larissa Coelho", role: "backoffice", title: "Back-office, mídia e conteúdo" },
 ];
 
+/** People added from the Equipe screen. Filled by the team store; always empty on the server. */
+let extras: readonly Persona[] = [];
+
+export function setExtraPersonas(list: readonly Persona[]): void {
+  extras = list;
+}
+
+/** The seed team plus anyone added in the panel. */
+export function allPersonas(): readonly Persona[] {
+  return [...personas, ...extras];
+}
+
+export function isSeedPersona(id: string): boolean {
+  return personas.some((persona) => persona.id === id);
+}
+
 export function getPersona(id: string): Persona | undefined {
-  return personas.find((persona) => persona.id === id);
+  return allPersonas().find((persona) => persona.id === id);
 }
 
 /** Personas that can own a listing: the ones who sell. */
-export const ownerCandidates: readonly Persona[] = personas.filter(
-  (persona) => persona.role !== "backoffice",
-);
+export function getOwnerCandidates(): readonly Persona[] {
+  return allPersonas().filter((persona) => persona.role !== "backoffice");
+}

@@ -3,7 +3,7 @@
 import { neighborhoods } from "@/data";
 import { LISTING_TYPES, validateRequired, type RequiredField } from "../../model/checklist";
 import { toPatch, type FormValues } from "../../model/form";
-import { ownerCandidates, roleLabels } from "../../model/personas";
+import { getOwnerCandidates, roleLabels } from "../../model/personas";
 import type { PanelListing, Persona } from "../../model/types";
 import { CheckboxField, SelectField, TextAreaField, TextField } from "./fields";
 
@@ -87,7 +87,7 @@ export function DadosStep(
           label="Responsável"
           hint="Só a Diretoria troca o responsável. A mudança vale na hora."
           value={props.listing.ownerId}
-          options={ownerCandidates.map((person) => ({
+          options={getOwnerCandidates().map((person) => ({
             value: person.id,
             label: `${person.name} (${roleLabels[person.role]})`,
           }))}
@@ -95,7 +95,7 @@ export function DadosStep(
         />
       ) : (
         <p className="panel-muted">
-          Responsável: {ownerCandidates.find((person) => person.id === props.listing.ownerId)?.name ?? "—"}
+          Responsável: {getOwnerCandidates().find((person) => person.id === props.listing.ownerId)?.name ?? "—"}
         </p>
       )}
     </div>

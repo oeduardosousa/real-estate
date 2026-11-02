@@ -13,6 +13,7 @@ import {
   type Result,
 } from "../model/workflow";
 import { clearPhotos, deletePhoto } from "./photos";
+import { ensureTeamLoaded, resetTeam } from "./team";
 import { isStorageDegraded, readJSON, removeItem, writeJSON } from "./storage";
 
 export const STORAGE_KEY = "curral-painel:v1";
@@ -44,6 +45,7 @@ let state: PanelState | null = null;
 const listeners = new Set<() => void>();
 
 function loadClientState(): PanelState {
+  ensureTeamLoaded();
   if (!state) {
     state = readJSON(STORAGE_KEY, parseState) ?? buildSeed();
   }
@@ -149,6 +151,7 @@ export async function pruneRemovedPhotos(before: PanelListing, after: PanelListi
 /** "Restaurar dados de demonstração": back to the 12 seed listings, no photos, empty extra history. */
 export async function resetDemo(): Promise<void> {
   removeItem(STORAGE_KEY);
+  resetTeam();
   await clearPhotos();
   state = buildSeed();
   listeners.forEach((listener) => listener());
