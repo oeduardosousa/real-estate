@@ -10,7 +10,7 @@ import { CountUp } from "./CountUp";
 export function Numbers() {
   return (
     <section id="numeros" aria-labelledby="numeros-titulo" className="numbers-wrap">
-      <div className="numbers on-dark" data-ambient>
+      <div className="numbers on-dark" data-ambient data-offscreen="true">
         <div className="numbers-glow numbers-glow--a" aria-hidden="true" />
         <div className="numbers-glow numbers-glow--b" aria-hidden="true" />
 

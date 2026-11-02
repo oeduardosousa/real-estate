@@ -9,7 +9,7 @@ import { TransitionLink } from "./TransitionLink";
 export function Footer() {
   return (
     <footer id="rodape" className="footer-wrap">
-      <div className="footer on-dark" data-ambient>
+      <div className="footer on-dark" data-ambient data-offscreen="true">
         <div className="footer-glow" aria-hidden="true" />
         <div className="footer-grid">
           <div className="footer-intro">

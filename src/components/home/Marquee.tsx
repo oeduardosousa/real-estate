@@ -18,7 +18,7 @@ export function Marquee() {
   );
 
   return (
-    <div className="marquee" data-ambient role="region" aria-label="O que fazemos">
+    <div className="marquee" data-ambient data-offscreen="true" role="region" aria-label="O que fazemos">
       <div className="marquee-track">
         {half(false)}
         {half(true)}

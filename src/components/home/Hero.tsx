@@ -32,7 +32,7 @@ export function Hero() {
 
       <div className="container hero-grid">
         <div className="hero-copy">
-          <p className="eyebrow hero-in" style={{ ["--d" as string]: 0.1 }}>
+          <p className="eyebrow hero-in" style={{ ["--d" as string]: 0.05 }}>
             <span className="dot pulse" /> Belo Horizonte e região metropolitana
           </p>
 
@@ -46,11 +46,11 @@ export function Hero() {
             ))}
           </h1>
 
-          <p className="t-lead hero-lead hero-in" style={{ ["--d" as string]: 0.75 }}>
+          <p className="t-lead hero-lead hero-in" style={{ ["--d" as string]: 0.3 }}>
             Casas, apartamentos e coberturas em Belo Horizonte e Nova Lima, apresentados com calma e precisão.
           </p>
 
-          <div className="hero-actions hero-in" style={{ ["--d" as string]: 0.9 }}>
+          <div className="hero-actions hero-in" style={{ ["--d" as string]: 0.4 }}>
             <Button href="/imoveis" arrow magnetic>
               Ver imóveis
             </Button>

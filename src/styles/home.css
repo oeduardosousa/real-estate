@@ -186,11 +186,11 @@
 }
 .hero-word > span {
   display: inline-block;
-  animation: word-rise 1.3s var(--ease) both;
-  animation-delay: calc(var(--i, 0) * 70ms + 150ms);
+  animation: word-rise 0.8s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 50ms);
 }
 .hero-in {
-  animation: hero-in 1.1s var(--ease) both;
+  animation: hero-in 0.7s var(--ease) both;
   animation-delay: calc(var(--d, 0) * 1s);
 }
 .hero-lead {

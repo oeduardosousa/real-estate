@@ -86,7 +86,7 @@ export function Story() {
       </div>
 
       <div className="container">
-        <div ref={sceneRef} data-ambient className="serra" role="img" aria-label="Ilustração da Serra do Curral ao longo do dia.">
+        <div ref={sceneRef} data-ambient data-offscreen="true" className="serra" role="img" aria-label="Ilustração da Serra do Curral ao longo do dia.">
           <div className="serra-sky serra-sky--a" data-sky="a" />
           <div className="serra-sky serra-sky--b" data-sky="b" />
           <div className="serra-sky serra-sky--c" data-sky="c" />

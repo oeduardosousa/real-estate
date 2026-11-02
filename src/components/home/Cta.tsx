@@ -7,7 +7,7 @@ export function Cta() {
   return (
     <section aria-labelledby="cta-titulo" className="cta-wrap">
       <div className="container">
-        <div className="cta" data-ambient>
+        <div className="cta" data-ambient data-offscreen="true">
           <div className="aurora aurora--cta" aria-hidden="true">
             <i className="blob blob--a" />
             <i className="blob blob--b" />
