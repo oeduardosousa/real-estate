@@ -170,14 +170,14 @@
   clip-path: inset(0 0 100% 0 round 0 0 3rem 3rem);
   visibility: hidden;
   transition:
-    clip-path 0.85s var(--ease),
-    visibility 0s linear 0.85s;
+    clip-path 0.7s var(--ease),
+    visibility 0s linear 0.7s;
 }
 .menu[data-open="true"] {
   clip-path: inset(0 0 0 0 round 0 0 0 0);
   visibility: visible;
   transition:
-    clip-path 0.85s var(--ease),
+    clip-path 0.7s var(--ease),
     visibility 0s;
 }
 .menu-inner {
@@ -208,8 +208,8 @@
   opacity: 1;
   transform: none;
   transition:
-    opacity 0.8s var(--ease),
-    transform 0.9s var(--ease);
+    opacity 0.6s var(--ease),
+    transform 0.7s var(--ease);
   transition-delay: calc(0.18s + var(--i, 0) * 0.07s);
 }
 .menu-foot {

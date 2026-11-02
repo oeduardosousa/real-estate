@@ -375,3 +375,32 @@ p {
     scroll-behavior: auto;
   }
 }
+
+/* ---------- press feedback for pressable cards ---------- */
+.lcard-link {
+  transition: scale 0.15s var(--ease);
+}
+.pill-link {
+  transition-property: background-color, border-color, transform, scale;
+  transition-duration: 0.5s, 0.5s, 0.45s, 0.15s;
+}
+.hero-card-link:active,
+.lcard-link:active,
+.pill-link:active {
+  scale: 0.985;
+}
+
+/* Reduced motion: no hover movement, colour and opacity feedback stay */
+:root[data-motion="reduced"] .tile,
+:root[data-motion="reduced"] .person,
+:root[data-motion="reduced"] .pill-link,
+:root[data-motion="reduced"] .pill-arrow,
+:root[data-motion="reduced"] .hero-card-link,
+:root[data-motion="reduced"] .lcard-go,
+:root[data-motion="reduced"] .lcard-link .scene,
+:root[data-motion="reduced"] .panel-persona,
+:root[data-motion="reduced"] .panel-member {
+  transform: none !important;
+  translate: none !important;
+  scale: none !important;
+}

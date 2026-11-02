@@ -267,7 +267,7 @@
   background: rgb(255 250 242 / 0.72);
   box-shadow: var(--shadow-soft);
 
-  transition: scale 0.7s var(--ease);
+  transition: scale 0.45s var(--ease);
 }
 @media (hover: hover) and (pointer: fine) {
   .hero-card-link:hover {
@@ -718,7 +718,7 @@
   border-radius: 50%;
   background: var(--paper);
   transition:
-    transform 0.7s var(--ease),
+    transform 0.45s var(--ease),
     background-color 0.4s var(--ease);
 }
 .lcard-body {
@@ -754,7 +754,7 @@
     transform: scale(0.5);
     opacity: 0;
     transition:
-      transform 0.7s var(--ease),
+      transform 0.45s var(--ease),
       opacity 0.4s var(--ease),
       background-color 0.4s var(--ease);
   }
@@ -801,7 +801,7 @@
   overflow: hidden;
   border-radius: var(--r-lg);
   background: var(--tile-bg);
-  transition: transform 0.8s var(--ease);
+  transition: transform 0.5s var(--ease);
 }
 .tile--peach {
   --tile-bg: color-mix(in srgb, var(--peach) 55%, var(--paper));
@@ -844,7 +844,7 @@
   border-radius: 50%;
   background: rgb(255 250 242 / 0.7);
   transition:
-    transform 0.8s var(--ease),
+    transform 0.45s var(--ease),
     background-color 0.4s var(--ease);
 }
 .tile-text {
@@ -962,7 +962,7 @@
   transition:
     background-color 0.5s var(--ease),
     border-color 0.5s var(--ease),
-    transform 0.6s var(--ease);
+    transform 0.45s var(--ease);
 }
 .pill-name {
   font-family: var(--font-display);
@@ -990,7 +990,7 @@
   border-radius: 50%;
   background: var(--sand-2);
   transition:
-    transform 0.6s var(--ease),
+    transform 0.45s var(--ease),
     background-color 0.4s var(--ease),
     color 0.4s var(--ease);
 }
@@ -1034,7 +1034,7 @@
   padding: 0.6rem 0.6rem 1.25rem;
   border-radius: var(--r-lg);
   background: color-mix(in srgb, var(--s-top) 40%, var(--paper));
-  transition: transform 0.8s var(--ease);
+  transition: transform 0.5s var(--ease);
 }
 .person-art {
   position: relative;

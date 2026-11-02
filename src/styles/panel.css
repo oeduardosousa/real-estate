@@ -986,12 +986,12 @@ a.panel-button {
   }
 }
 :root[data-motion="full"] .panel-top {
-  animation: panel-drop 0.6s var(--ease) both;
+  animation: panel-drop 0.35s var(--ease) both;
 }
 /* Each screen re-mounts on a route change, so these replay per screen. */
 :root[data-motion="full"] .panel-main > * > header,
 :root[data-motion="full"] .panel-login > * {
-  animation: panel-rise 0.8s var(--ease) both;
+  animation: panel-rise 0.4s var(--ease) both;
 }
 :root[data-motion="full"] .panel-stat,
 :root[data-motion="full"] .panel-card,
@@ -1001,8 +1001,8 @@ a.panel-button {
 :root[data-motion="full"] .panel-filters,
 :root[data-motion="full"] .panel-toolbar,
 :root[data-motion="full"] .panel-step-body {
-  animation: panel-rise 0.8s var(--ease) both;
-  animation-delay: calc(var(--i, 0) * 60ms + 120ms);
+  animation: panel-rise 0.4s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 40ms + 40ms);
 }
 :root[data-motion="full"] .panel-stat:nth-child(1) { --i: 0; }
 :root[data-motion="full"] .panel-stat:nth-child(2) { --i: 1; }
@@ -1023,8 +1023,8 @@ a.panel-button {
 :root[data-motion="full"] .panel-rows > li,
 :root[data-motion="full"] .panel-member,
 :root[data-motion="full"] .panel-persona-list > li {
-  animation: panel-rise 0.7s var(--ease) both;
-  animation-delay: calc(var(--j, 0) * 40ms + 300ms);
+  animation: panel-rise 0.35s var(--ease) both;
+  animation-delay: calc(var(--j, 0) * 30ms + 140ms);
 }
 :root[data-motion="full"] .panel-rows > li:nth-child(2),
 :root[data-motion="full"] .panel-member:nth-child(2),
