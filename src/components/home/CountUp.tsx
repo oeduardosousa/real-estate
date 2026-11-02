@@ -1,8 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap } from "@/lib/motion/gsap";
-import { useMotion } from "@/lib/motion/use-motion";
+import { useMotion, useNearViewport } from "@/lib/motion/use-motion";
 
 /** "R$ 1,2 bi" → prefix "R$ ", number 1.2 (one decimal), suffix " bi". */
 function parse(value: string) {
@@ -19,8 +18,9 @@ function parse(value: string) {
  */
 export function CountUp({ value, className = "" }: { value: string; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
+  const near = useNearViewport(ref);
 
-  useMotion(({ mode }) => {
+  useMotion(({ mode, gsap }) => {
     const el = ref.current;
     const parsed = parse(value);
     if (mode === "reduced" || !el || !parsed) return;
@@ -44,7 +44,7 @@ export function CountUp({ value, className = "" }: { value: string; className?: 
     return () => {
       el.textContent = value;
     };
-  });
+  }, { enabled: near });
 
   return (
     <span ref={ref} className={className}>

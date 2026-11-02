@@ -12,9 +12,10 @@ import {
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ease, pageTransition, type MotionMode } from "@/lib/motion/config";
-import { gsap, ScrollTrigger } from "@/lib/motion/gsap";
+import { getGsap, loadGsap, prefetchGsapOnIntent, type GsapModule } from "@/lib/motion/load-gsap";
+import { useSiteReducedMotion } from "@/lib/motion/preference";
 import { scrollTo } from "@/lib/motion/scroll";
-import { useMotion } from "@/lib/motion/use-motion";
+import { resolveMotionMode } from "@/lib/motion/use-motion";
 
 interface PageTransitionContextValue {
   /** Runs the exit animation, swaps the route, then lifts the panel away. */
@@ -27,6 +28,8 @@ const PageTransitionContext = createContext<PageTransitionContextValue | null>(n
 export function usePageTransition() {
   return useContext(PageTransitionContext);
 }
+
+type Tween = ReturnType<GsapModule["gsap"]["to"]>;
 
 const PANEL_HIDDEN = { yPercent: 100, visibility: "hidden", pointerEvents: "none" } as const;
 const PANEL_COVERING = { visibility: "visible", pointerEvents: "auto" } as const;
@@ -51,25 +54,33 @@ export function PageTransition({ children }: { children: ReactNode }) {
   const pathnameRef = useRef(pathname);
   const previousPathname = useRef(pathname);
   const navigating = useRef(false);
-  const tween = useRef<gsap.core.Tween | null>(null);
-  const fallback = useRef<gsap.core.Tween | null>(null);
+  const tween = useRef<Tween | null>(null);
+  const fallback = useRef<Tween | null>(null);
+  const navigateRef = useRef<(href: string) => void>(() => {});
+  const siteReduced = useSiteReducedMotion();
+  const siteReducedRef = useRef(siteReduced);
+  useEffect(() => {
+    siteReducedRef.current = siteReduced;
+  }, [siteReduced]);
 
-  useMotion(({ mode }) => {
-    modeRef.current = mode;
+  // GSAP is only needed once somebody navigates, so it is fetched on the first sign of intent, not at load.
+  useEffect(() => {
+    const stop = prefetchGsapOnIntent();
     const panel = panelRef.current;
-    if (panel) gsap.set(panel, PANEL_HIDDEN);
-
     return () => {
+      stop();
       tween.current?.kill();
       fallback.current?.kill();
-      if (panel) gsap.set(panel, PANEL_HIDDEN);
+      if (panel) getGsap()?.gsap.set(panel, PANEL_HIDDEN);
       navigating.current = false;
     };
-  });
+  }, []);
 
   const lift = useCallback(() => {
     const panel = panelRef.current;
-    if (!panel) return;
+    const loaded = getGsap();
+    if (!panel || !loaded) return;
+    const { gsap } = loaded;
     fallback.current?.kill();
     tween.current?.kill();
     const { enter } = pageTransition[modeRef.current === "light" ? "light" : "full"];
@@ -87,6 +98,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
     (href: string) => {
       const target = new URL(href, window.location.href);
       const panel = panelRef.current;
+      modeRef.current = resolveMotionMode(siteReducedRef.current);
 
       // Same page (hash or query change) and reduced motion swap at once.
       if (target.pathname === pathnameRef.current || modeRef.current === "reduced" || !panel) {
@@ -98,6 +110,14 @@ export function PageTransition({ children }: { children: ReactNode }) {
       navigating.current = true;
       tween.current?.kill();
       fallback.current?.kill();
+
+      // First navigation before the prefetch landed: wait for GSAP, then run the same exit.
+      const loaded = getGsap();
+      if (!loaded) {
+        void loadGsap().then(() => navigateRef.current(href));
+        return;
+      }
+      const { gsap } = loaded;
 
       // Interrupting a lift: rise again from where the panel is. Otherwise start below the screen.
       if (getComputedStyle(panel).visibility === "hidden") {
@@ -118,6 +138,9 @@ export function PageTransition({ children }: { children: ReactNode }) {
     },
     [lift, router],
   );
+  useEffect(() => {
+    navigateRef.current = navigate;
+  }, [navigate]);
 
   // The new route is in place.
   useEffect(() => {
@@ -125,22 +148,18 @@ export function PageTransition({ children }: { children: ReactNode }) {
     if (previousPathname.current === pathname) return;
     previousPathname.current = pathname;
 
+    modeRef.current = resolveMotionMode(siteReducedRef.current);
     const fromLink = navigating.current;
     navigating.current = false;
     const content = contentRef.current;
 
     if (fromLink) scrollTo(0, { immediate: true });
     content?.focus({ preventScroll: true });
-    requestAnimationFrame(() => ScrollTrigger.refresh());
+    const scrollTriggers = getGsap()?.ScrollTrigger;
+    if (scrollTriggers) requestAnimationFrame(() => scrollTriggers.refresh());
 
     if (modeRef.current === "reduced") {
-      if (content) {
-        gsap.fromTo(
-          content,
-          { opacity: 0 },
-          { opacity: 1, duration: pageTransition.reducedFade, clearProps: "opacity" },
-        );
-      }
+      content?.animate({ opacity: [0, 1] }, { duration: pageTransition.reducedFade * 1000, easing: "ease-out" });
     } else if (fromLink) {
       lift();
     }

@@ -3,9 +3,8 @@
 import { useRef, type ComponentProps, type ReactNode } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { TransitionLink } from "@/components/layout/TransitionLink";
-import { duration, ease } from "@/lib/motion/config";
-import { gsap } from "@/lib/motion/gsap";
-import { useMotion } from "@/lib/motion/use-motion";
+import { duration, ease, MEDIA } from "@/lib/motion/config";
+import { useMediaQuery, useMotion } from "@/lib/motion/use-motion";
 
 type Variant = "primary" | "soft" | "light";
 
@@ -29,9 +28,10 @@ const MAGNET_PULL = 10;
 export function Button(props: LinkButtonProps | NativeButtonProps) {
   const { variant = "primary", magnetic = false, arrow = false, className = "", children, ...rest } = props;
   const ref = useRef<HTMLElement>(null);
+  const fineDesktop = useMediaQuery(MEDIA.full);
 
   useMotion(
-    ({ mode }) => {
+    ({ mode, gsap }) => {
       const el = ref.current;
       if (!magnetic || mode !== "full" || !el) return;
 
@@ -60,7 +60,7 @@ export function Button(props: LinkButtonProps | NativeButtonProps) {
         gsap.to(el, { x: 0, y: 0, duration: duration.fast, ease: ease.out, overwrite: true });
       };
     },
-    { dependencies: [magnetic] },
+    { dependencies: [], enabled: magnetic && fineDesktop },
   );
 
   const classes = `btn btn-${variant} ${className}`;

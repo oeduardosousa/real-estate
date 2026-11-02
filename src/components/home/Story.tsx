@@ -4,8 +4,7 @@ import { useRef } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { RidgeFill } from "@/components/ui/Ridge";
 import { site, stats } from "@/data";
-import { gsap } from "@/lib/motion/gsap";
-import { useMotion } from "@/lib/motion/use-motion";
+import { useMotion, useNearViewport } from "@/lib/motion/use-motion";
 
 const STATEMENT = `Belo Horizonte quer dizer belo horizonte. A Serra do Curral é a linha que o fecha, e olhamos para ela desde ${site.founded}.`;
 const WORDS = STATEMENT.split(" ");
@@ -21,8 +20,9 @@ const served = stats.find((stat) => stat.label === "bairros atendidos")?.value;
 export function Story() {
   const textRef = useRef<HTMLParagraphElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
+  const near = useNearViewport(textRef);
 
-  useMotion(({ mode }) => {
+  useMotion(({ mode, gsap }) => {
     const text = textRef.current;
     const scene = sceneRef.current;
     if (mode === "reduced" || !text || !scene) return;
@@ -50,7 +50,7 @@ export function Story() {
       .fromTo(q("[data-drift='far']"), { yPercent: 8 }, { yPercent: -2 }, 0)
       .fromTo(q("[data-drift='mid']"), { yPercent: 14 }, { yPercent: -4 }, 0)
       .fromTo(q("[data-drift='near']"), { yPercent: 22 }, { yPercent: -6 }, 0);
-  });
+  }, { enabled: near });
 
   return (
     <section id="serra" className="story section" aria-labelledby="serra-titulo">

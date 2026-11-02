@@ -4,11 +4,10 @@ import { useLayoutEffect, type ReactNode } from "react";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { AmbientObserver } from "@/components/motion/AmbientObserver";
 import { Spotlight } from "@/components/motion/Spotlight";
-import "@/lib/motion/gsap";
 import { SmoothScroll } from "./SmoothScroll";
 
 /**
- * Client providers for the whole app: GSAP plugins are registered on import, Lenis runs once,
+ * Client providers for the whole app: GSAP and Lenis load lazily and Lenis runs once,
  * the page-transition shell wraps the routes, and Spotlight feeds the soft hover glow.
  */
 export function Providers({ children }: { children: ReactNode }) {

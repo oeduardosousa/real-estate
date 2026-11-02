@@ -2,18 +2,13 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 
-let registered = false;
-
-/** Registers the always-needed plugins once, on the client. Safe to call repeatedly. */
-export function registerGsap() {
-  if (registered || typeof window === "undefined") return;
-  gsap.registerPlugin(useGSAP, ScrollTrigger);
-  registered = true;
-}
-
-registerGsap();
+/**
+ * GSAP core + ScrollTrigger, registered once. Never import this file statically from a component:
+ * it would put GSAP in the initial bundle. Go through `loadGsap()` (or `useMotion`) so the library
+ * arrives in its own chunk after hydration (DESIGN.md performance budget).
+ */
+gsap.registerPlugin(ScrollTrigger);
 
 let splitTextPromise: Promise<typeof import("gsap/SplitText")["SplitText"]> | undefined;
 let flipPromise: Promise<typeof import("gsap/Flip")["Flip"]> | undefined;
@@ -36,4 +31,4 @@ export function loadFlip() {
   return flipPromise;
 }
 
-export { gsap, ScrollTrigger, useGSAP };
+export { gsap, ScrollTrigger };
