@@ -87,7 +87,7 @@ export function Header() {
               );
             })}
             <ViewSwitch current="cliente" />
-            <Button href="/contato" arrow magnetic className="site-nav-cta">
+            <Button href="/contato" arrow className="site-nav-cta">
               Falar com a equipe
             </Button>
           </nav>
