@@ -107,6 +107,17 @@ describe("store", () => {
     expect(kinds).toEqual(["create", "edit"]);
   });
 
+  it("blocks sending to review until the checklist passes", async () => {
+    const store = await freshStore();
+    const created = store.createListing(camila, { title: "Casa Nova" });
+    if (!created.ok) throw new Error("create failed");
+    expect(store.transitionListing(camila, created.value.id, "Em revisão")).toEqual({
+      ok: false,
+      error: "checklist_failed",
+    });
+    expect(store.getSnapshot().listings.find((l) => l.id === created.value.id)?.status).toBe("Rascunho");
+  });
+
   it("returns errors without changing anything", async () => {
     const store = await freshStore();
     const before = store.getSnapshot();

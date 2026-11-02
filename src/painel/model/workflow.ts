@@ -22,7 +22,8 @@ export type WorkflowError =
   | "comment_required"
   | "no_changes"
   | "invalid_owner"
-  | "owner_required";
+  | "owner_required"
+  | "checklist_failed";
 
 export type Result<T> = { ok: true; value: T } | { ok: false; error: WorkflowError };
 

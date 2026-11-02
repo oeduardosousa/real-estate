@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { reviewChecklist } from "../model/checklist";
 import { buildSeed, type PanelState } from "../model/seed";
 import type { Actor, EditableFields, PanelListing, Status } from "../model/types";
 import {
@@ -126,7 +127,13 @@ export function transitionListing(
   to: Status,
   comment?: string,
 ): Result<PanelListing> {
-  return run(id, (listing, clock) => applyTransition(listing, actor, to, comment, clock));
+  return run(id, (listing, clock) => {
+    // The review checklist blocks "Enviar para revisão" (PAINEL.md), whatever screen asks for it.
+    if (to === "Em revisão" && listing.status === "Rascunho" && !reviewChecklist(listing).ready) {
+      return { ok: false, error: "checklist_failed" };
+    }
+    return applyTransition(listing, actor, to, comment, clock);
+  });
 }
 
 export function reassignListing(actor: Actor, id: number, newOwnerId: string): Result<PanelListing> {

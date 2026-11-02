@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { averageDaysByStatus, countByStatus, daysBetween, listingsInScope } from "../model/metrics";
+import Link from "next/link";
+import { averageDaysByStatus, countByStatus, listingsInScope } from "../model/metrics";
 import { getPersona, roleLabels } from "../model/personas";
 import { STATUSES, type PanelListing, type Persona } from "../model/types";
+import { ago, editorHref } from "./format";
 import { usePanelState, useSession } from "./hooks";
 import { StatusBadge } from "./StatusBadge";
 
@@ -13,12 +15,6 @@ const scopeText = {
   backoffice: "Todos os imóveis, com foco no que falta completar.",
 } as const;
 
-function ago(iso: string, now: Date): string {
-  const days = daysBetween(iso, now);
-  if (days === 0) return "hoje";
-  return days === 1 ? "há 1 dia" : `há ${days} dias`;
-}
-
 const decimal = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
 
 function ListingRow({ listing, now, showOwner }: { listing: PanelListing; now: Date; showOwner: boolean }) {
@@ -26,7 +22,11 @@ function ListingRow({ listing, now, showOwner }: { listing: PanelListing; now: D
   return (
     <li className="panel-row">
       <div>
-        <p className="panel-row-title">{listing.title}</p>
+        <p className="panel-row-title">
+          <Link href={editorHref(listing.id)} className="panel-row-link">
+            {listing.title}
+          </Link>
+        </p>
         <p className="panel-muted">
           {listing.neighborhood}
           {showOwner && owner ? ` · ${owner.name}` : ""} · {ago(listing.statusChangedAt, now)}
