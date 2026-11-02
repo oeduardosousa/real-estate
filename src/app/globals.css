@@ -74,3 +74,162 @@
     @apply mx-auto w-full max-w-content px-gutter;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Buttons (DESIGN.md "Buttons"): square, 52px, fill sweeps in from the left */
+/* ------------------------------------------------------------------ */
+@layer components {
+  .btn {
+    @apply type-label relative isolate inline-flex h-control min-h-touch items-center justify-center overflow-hidden px-8 text-center;
+    transition:
+      color var(--duration-base) var(--ease-out),
+      scale var(--duration-instant) var(--ease-out),
+      opacity var(--duration-fast) var(--ease-out);
+  }
+
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path var(--duration-base) var(--ease-out);
+  }
+
+  .btn-label {
+    position: relative;
+  }
+
+  .btn:active {
+    scale: 0.97;
+  }
+
+  .btn-primary {
+    @apply bg-grafite text-pedra;
+  }
+  .btn-primary::before {
+    background: var(--canga);
+  }
+
+  .btn-secondary {
+    @apply text-grafite;
+    box-shadow: inset 0 0 0 1px var(--grafite);
+  }
+  .btn-secondary::before {
+    background: var(--grafite);
+  }
+
+  .btn-on-noite {
+    @apply bg-nevoa text-noite;
+  }
+  .btn-on-noite::before {
+    background: var(--canga-claro);
+  }
+
+  .btn-primary:focus-visible,
+  .btn-secondary:focus-visible {
+    outline-color: var(--grafite);
+  }
+  .btn-on-noite:focus-visible {
+    outline-color: var(--canga-claro);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover::before {
+      clip-path: inset(0);
+    }
+    .btn-secondary:hover {
+      color: var(--pedra);
+    }
+  }
+
+  /* Touch: no hover state; :active dims instead of sweeping. */
+  @media (hover: none) {
+    .btn:active {
+      opacity: 0.92;
+    }
+  }
+
+  /* Text link with a 1px underline that scales from the left on hover (160ms). */
+  .link-quiet {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+    padding-bottom: 2px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .link-quiet {
+      background-size: 0 1px;
+      transition: background-size var(--duration-fast) var(--ease-out);
+    }
+    .link-quiet:hover,
+    .link-quiet:focus-visible {
+      background-size: 100% 1px;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Pre-reveal states                                                  */
+/* Elements that GSAP reveals start hidden only while JS is known to be running            */
+/* (data-motion="full", set by the inline head script). Without JS, or with reduced motion, */
+/* they are simply visible. A failsafe reveals them if GSAP never takes over.              */
+/* ------------------------------------------------------------------ */
+@keyframes failsafe-show {
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}
+
+:root[data-motion="full"] .pre-reveal {
+  opacity: 0;
+  animation: failsafe-show 1ms 4s forwards;
+}
+
+:root[data-motion="full"] .ridge-draw {
+  clip-path: inset(-4px 100% -4px 0);
+  animation: failsafe-show 1ms 4s forwards;
+}
+
+/* ------------------------------------------------------------------ */
+/* Loader (first visit only; the head script sets html[data-loader])   */
+/* ------------------------------------------------------------------ */
+.loader {
+  display: none;
+}
+
+:root[data-loader="on"] .loader,
+:root[data-loader="done"] .loader[data-lifting] {
+  display: grid;
+}
+
+@keyframes loader-failsafe {
+  to {
+    visibility: hidden;
+  }
+}
+
+:root[data-loader="on"] .loader {
+  animation: loader-failsafe 1ms 3.4s forwards;
+}
+
+/* Hero intro waits for the loader to lift (pure CSS, no JS needed to start it). */
+:root[data-loader="on"] .intro-wait {
+  animation-play-state: paused;
+}
+
+/* ------------------------------------------------------------------ */
+/* Header                                                             */
+/* ------------------------------------------------------------------ */
+.site-header {
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+.site-header[data-hidden="true"] {
+  transform: translateY(-100%);
+}
+.site-header[data-solid="true"] {
+  background-color: var(--pedra);
+  box-shadow: inset 0 -1px 0 var(--line);
+}
