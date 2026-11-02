@@ -1,4 +1,17 @@
-import type { Persona } from "./types";
+import type { Persona, Role } from "./types";
+
+export const roleLabels: Record<Role, string> = {
+  diretoria: "Diretoria",
+  corretor: "Corretor",
+  backoffice: "Back-office",
+};
+
+/** One line per role for the persona picker, drawn from the permission matrix in PAINEL.md. */
+export const roleSummaries: Record<Role, string> = {
+  diretoria: "Aprova, devolve e publica. Vê todos os imóveis.",
+  corretor: "Cadastra e acompanha os próprios imóveis.",
+  backoffice: "Cadastra e completa imóveis de toda a equipe.",
+};
 
 /**
  * Demo personas (PAINEL.md). The first five are the BRIEF.md team and share their ids with `team`;

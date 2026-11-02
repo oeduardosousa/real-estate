@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { legalLinks, navLinks, site } from "@/data";
 import { getLenis } from "@/lib/motion/scroll";
 import { TransitionLink } from "./TransitionLink";
+import { ViewSwitch } from "./ViewSwitch";
 
 interface MenuOverlayProps {
   open: boolean;
@@ -65,6 +66,9 @@ export function MenuOverlay({ open, onClose }: MenuOverlayProps) {
           ))}
         </ul>
         <div className="menu-foot" style={{ ["--i" as string]: LINKS.length }}>
+          <div className="menu-view">
+            <ViewSwitch current="cliente" />
+          </div>
           <p>{site.tagline}</p>
           <ul>
             {legalLinks.map((link) => (

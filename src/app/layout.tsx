@@ -1,8 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
-import { PageContent } from "@/components/layout/PageTransition";
-import { Providers } from "@/components/providers/Providers";
+import { AppShell } from "@/components/layout/AppShell";
 import { site } from "@/data";
 import { fontVariables } from "@/lib/fonts";
 import { motionInitScript } from "@/lib/motion/init-script";
@@ -28,11 +25,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#conteudo" className="skip-link">
           Ir para o conteúdo
         </a>
-        <Providers>
-          <Header />
-          <PageContent>{children}</PageContent>
-          <Footer />
-        </Providers>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

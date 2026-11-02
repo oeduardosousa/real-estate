@@ -6,6 +6,7 @@ import { navLinks } from "@/data";
 import { Button } from "@/components/ui/Button";
 import { MenuOverlay } from "./MenuOverlay";
 import { TransitionLink } from "./TransitionLink";
+import { ViewSwitch } from "./ViewSwitch";
 import { Wordmark } from "./Wordmark";
 
 /** Scroll distance before the bar hides on the way down. */
@@ -85,6 +86,7 @@ export function Header() {
                 </TransitionLink>
               );
             })}
+            <ViewSwitch current="cliente" />
             <Button href="/contato" arrow magnetic className="site-nav-cta">
               Falar com a equipe
             </Button>
