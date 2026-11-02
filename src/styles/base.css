@@ -400,3 +400,13 @@ p {
   translate: none !important;
   scale: none !important;
 }
+
+/* ---------- eager entrances: above-the-fold content animates from CSS at load, never waits for hydration ---------- */
+:root[data-motion="full"] .reveal-eager {
+  animation: hero-in 0.7s var(--ease) both;
+  animation-delay: calc(var(--d, 0) * 1s);
+}
+:root[data-motion="full"] .wr-eager .wr-w > span {
+  animation: word-rise 0.8s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 0.045s + var(--d, 0) * 1s);
+}

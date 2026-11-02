@@ -12,13 +12,13 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <section aria-labelledby="contato-titulo" className="container contact">
-      <Reveal>
+      <Reveal eager>
         <p className="eyebrow">
           <span className="dot" /> Contato
         </p>
       </Reveal>
-      <Heading id="contato-titulo" as="h1" className="t-display contact-title" text="Vamos conversar sobre o *seu imóvel*." />
-      <Reveal as="p" className="t-lead contact-lead">
+      <Heading eager id="contato-titulo" as="h1" className="t-display contact-title" text="Vamos conversar sobre o *seu imóvel*." />
+      <Reveal eager as="p" className="t-lead contact-lead">
         Conte o que você procura ou o que quer anunciar. A equipe responde com calma e sem compromisso.
       </Reveal>
 

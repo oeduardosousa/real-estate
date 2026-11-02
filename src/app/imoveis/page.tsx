@@ -15,13 +15,13 @@ export default function ListingsPage() {
   return (
     <>
       <section aria-labelledby="imoveis-titulo" className="container page-top">
-        <Reveal>
+        <Reveal eager>
           <p className="eyebrow">
             <span className="dot" /> {listings.length} imóveis
           </p>
         </Reveal>
-        <Heading as="h1" id="imoveis-titulo" className="t-display page-title" text="Todos os *imóveis*." />
-        <Reveal as="p" className="t-lead page-lead" delay={0.15}>
+        <Heading eager as="h1" id="imoveis-titulo" className="t-display page-title" text="Todos os *imóveis*." />
+        <Reveal eager as="p" className="t-lead page-lead" delay={0.15}>
           Belo Horizonte e Nova Lima, à venda e para alugar. Use os filtros para chegar mais perto do que procura.
         </Reveal>
       </section>

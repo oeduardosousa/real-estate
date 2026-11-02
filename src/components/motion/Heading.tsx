@@ -11,6 +11,8 @@ interface HeadingProps {
   text: string;
   /** Seconds before the first word moves. */
   delay?: number;
+  /** Above the fold: the words rise from CSS on load instead of waiting for hydration. */
+  eager?: boolean;
 }
 
 /** Splits `text` into words, keeping the `*italic*` markers. Words keep a real space between them. */
@@ -38,7 +40,7 @@ function words(text: string) {
  * Headline whose words rise out of a mask when it enters the viewport (CSS transition, see base.css).
  * Screen readers get the whole sentence from aria-label; the split words are hidden from them.
  */
-export function Heading({ as: Tag = "h2", className = "", id, text, delay = 0 }: HeadingProps) {
+export function Heading({ as: Tag = "h2", className = "", id, text, delay = 0, eager = false }: HeadingProps) {
   const ref = useInView<HTMLElement>("0px 0px -6% 0px");
   const label = text.replace(/\*/g, "");
 
@@ -47,7 +49,7 @@ export function Heading({ as: Tag = "h2", className = "", id, text, delay = 0 }:
       ref={ref}
       id={id}
       aria-label={label}
-      className={`wr ${className}`}
+      className={`${eager ? "wr-eager" : "wr"} ${className}`}
       style={delay ? { ["--d" as string]: delay } : undefined}
     >
       {words(text).map(({ word, italic, tail }, index, all) => (

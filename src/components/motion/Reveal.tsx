@@ -38,13 +38,15 @@ interface RevealProps {
   /** Seconds. Staggers siblings. */
   delay?: number;
   id?: string;
+  /** Above the fold: animates on load from CSS, without waiting for hydration (keeps LCP off the JS path). */
+  eager?: boolean;
 }
 
 /** Fades and rises a block once, when it enters the viewport. */
-export function Reveal({ as: Tag = "div", className = "", children, delay = 0, id }: RevealProps) {
+export function Reveal({ as: Tag = "div", className = "", children, delay = 0, id, eager = false }: RevealProps) {
   const ref = useInView<HTMLElement>();
   return (
-    <Tag ref={ref} id={id} className={`reveal ${className}`} style={delay ? { ["--d" as string]: delay } : undefined}>
+    <Tag ref={ref} id={id} className={`${eager ? "reveal-eager" : "reveal"} ${className}`} style={delay ? { ["--d" as string]: delay } : undefined}>
       {children}
     </Tag>
   );

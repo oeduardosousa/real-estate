@@ -76,17 +76,17 @@ export default async function ListingPage({ params }: PageProps<"/imoveis/[slug]
 
           <div className="detail-title">
             <div>
-              <Reveal>
+              <Reveal eager>
                 <p className="eyebrow">
                   <span className="dot" /> {purposeLabel[listing.purpose]} · {listing.type}
                 </p>
               </Reveal>
-              <Heading as="h1" id="imovel-titulo" className="t-display page-title" text={listing.title} />
-              <Reveal as="p" className="t-lead page-lead" delay={0.15}>
+              <Heading eager as="h1" id="imovel-titulo" className="t-display page-title" text={listing.title} />
+              <Reveal eager as="p" className="t-lead page-lead" delay={0.15}>
                 {listing.summary}
               </Reveal>
             </div>
-            <Reveal className="detail-price" delay={0.2}>
+            <Reveal eager className="detail-price" delay={0.2}>
               <p className="t-small">{isSale ? "Valor de venda" : "Aluguel mensal"}</p>
               <p className="detail-price-figure num">{formatPrice(listing)}</p>
             </Reveal>
