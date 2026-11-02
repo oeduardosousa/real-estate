@@ -75,3 +75,23 @@ export interface NavLink {
   label: string;
   href: string;
 }
+
+export interface Milestone {
+  year: string;
+  title: string;
+  text: string;
+}
+
+export interface Principle {
+  title: string;
+  text: string;
+}
+
+export interface Award {
+  year: string;
+  title: string;
+  category: string;
+  /** Fictional awarding body. */
+  body: string;
+  note: string;
+}

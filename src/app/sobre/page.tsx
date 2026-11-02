@@ -1,8 +1,28 @@
 import type { Metadata } from "next";
-import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
+import { Awards } from "@/components/about/Awards";
+import { AboutHero } from "@/components/about/AboutHero";
+import { Principles } from "@/components/about/Principles";
+import { Timeline } from "@/components/about/Timeline";
+import { Cta } from "@/components/home/Cta";
+import { Numbers } from "@/components/home/Numbers";
+import { Team } from "@/components/home/Team";
+import { site } from "@/data";
 
-export const metadata: Metadata = { title: "Sobre" };
+export const metadata: Metadata = {
+  title: "Sobre",
+  description: `A história da ${site.name}: desde ${site.founded}, uma casa pequena de propósito que conhece cada imóvel antes de apresentá-lo.`,
+};
 
 export default function AboutPage() {
-  return <PagePlaceholder label="Sobre" title="Sobre e equipe" />;
+  return (
+    <>
+      <AboutHero />
+      <Timeline />
+      <Principles />
+      <Numbers />
+      <Awards />
+      <Team />
+      <Cta />
+    </>
+  );
 }
