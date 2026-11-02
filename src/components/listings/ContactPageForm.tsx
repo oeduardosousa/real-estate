@@ -9,13 +9,23 @@ const SUBJECTS = ["Comprar", "Vender", "Alugar", "Investir", "Outro assunto"] as
 
 const schema = z.object({
   name: z.string().trim().min(2, "Informe seu nome."),
-  email: z.email("Informe um e-mail válido."),
+  whatsapp: z.string().refine((value) => /^[1-9]{2}9?d{8}$/.test(value.replace(/D/g, "")), "Informe um WhatsApp com DDD."),
   subject: z.enum(SUBJECTS, "Escolha um assunto."),
   message: z.string().trim().min(10, "Escreva ao menos uma frase."),
 });
 
-type Field = "name" | "email" | "subject" | "message";
+type Field = "name" | "whatsapp" | "subject" | "message";
 type Errors = Partial<Record<Field, string>>;
+
+/** Formats digits as a Brazilian phone while typing: (31) 91234-5678. */
+function maskPhone(value: string) {
+  const digits = value.replace(/D/g, "").slice(0, 11);
+  if (digits.length <= 2) return digits;
+  const split = digits.length > 10 ? 7 : 6;
+  const head = digits.slice(2, split);
+  const tail = digits.slice(split);
+  return `(${digits.slice(0, 2)}) ${head}${tail ? "-" + tail : ""}`;
+}
 
 /** Demo-only form (CLAUDE.md): validated with zod, shows a success state, stores and sends nothing. */
 export function ContactPageForm() {
@@ -46,7 +56,7 @@ export function ContactPageForm() {
       <div className="form-done" role="status">
         <p className="t-title">Mensagem registrada.</p>
         <p className="t-small">
-          Isto é uma demonstração: nada foi enviado ou armazenado. Em um site real, {sent} responderia em breve.
+          Isto é uma demonstração: nada foi enviado ou armazenado. Em um site real, {sent} responderia em breve pelo WhatsApp.
         </p>
         <button type="button" className="link" onClick={() => setSent(null)}>
           Enviar outra
@@ -75,9 +85,19 @@ export function ContactPageForm() {
           {error("name")}
         </label>
         <label className="field field--stack">
-          <span>E-mail</span>
-          <input name="email" type="email" autoComplete="email" {...invalid("email")} />
-          {error("email")}
+          <span>WhatsApp</span>
+          <input
+            name="whatsapp"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel-national"
+            placeholder="(31) 99999-9999"
+            onChange={(event) => {
+              event.currentTarget.value = maskPhone(event.currentTarget.value);
+            }}
+            {...invalid("whatsapp")}
+          />
+          {error("whatsapp")}
         </label>
       </div>
 
