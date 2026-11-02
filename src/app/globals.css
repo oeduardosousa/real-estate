@@ -348,3 +348,79 @@
 .story-pinned [data-progress] {
   transform: scaleX(0);
 }
+
+/* ------------------------------------------------------------------ */
+/* Listing cards and the featured track                                */
+/* ------------------------------------------------------------------ */
+.card-image {
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.card-title {
+  background-size: 0 1px;
+  transition: background-size var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .card-image {
+    transform: scale(1.04);
+  }
+  .group:hover .card-title,
+  .group:focus-within .card-title {
+    background-size: 100% 1px;
+  }
+}
+
+/* Touch: no hover; the pressed card dims. */
+@media (hover: none) {
+  .group:active {
+    opacity: 0.92;
+  }
+}
+
+.group:focus-within .card-title {
+  background-size: 100% 1px;
+}
+
+/* Native scroller by default (mobile, touch, reduced motion, no JavaScript). */
+.track-viewport {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--gutter);
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.track-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.track-card {
+  width: 80vw;
+  scroll-snap-align: start;
+}
+@media (min-width: 640px) {
+  .track-card {
+    width: 46vw;
+  }
+}
+@media (min-width: 1024px) {
+  .track-card {
+    /* 38vw, but never so tall that the card, its text and the controls outgrow the pinned viewport. */
+    width: min(38vw, 44svh);
+  }
+}
+
+/* Full mode pins the section; the track is moved by GSAP instead of scrolled. */
+@media (min-width: 1024px) and (min-height: 560px) and (hover: hover) and (pointer: fine) {
+  :root[data-motion="full"] .track-pin {
+    display: flex;
+    min-height: 100svh;
+    flex-direction: column;
+    justify-content: center;
+  }
+  :root[data-motion="full"] .track-viewport {
+    overflow: hidden;
+    scroll-snap-type: none;
+  }
+}
+
