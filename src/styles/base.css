@@ -380,10 +380,6 @@ p {
 .lcard-link {
   transition: scale 0.15s var(--ease);
 }
-.pill-link {
-  transition-property: background-color, border-color, transform, scale;
-  transition-duration: 0.5s, 0.5s, 0.45s, 0.15s;
-}
 .hero-card-link:active,
 .lcard-link:active,
 .pill-link:active {

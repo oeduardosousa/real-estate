@@ -962,7 +962,8 @@
   transition:
     background-color 0.5s var(--ease),
     border-color 0.5s var(--ease),
-    transform 0.45s var(--ease);
+    transform 0.45s var(--ease),
+    scale 0.15s var(--ease);
 }
 .pill-name {
   font-family: var(--font-display);
