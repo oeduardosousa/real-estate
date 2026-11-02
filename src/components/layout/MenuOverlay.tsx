@@ -152,7 +152,7 @@ export function MenuOverlay({ open, onClose }: MenuOverlayProps) {
               <span className="btn-label">Falar com a equipe</span>
             </TransitionLink>
             <MotionSwitch />
-            <ul className="flex gap-6 text-label text-fg-secondary">
+            <ul className="type-label flex gap-6 text-fg-secondary">
               {legalLinks.map((link) => (
                 <li key={link.href}>
                   <TransitionLink href={link.href} className="inline-flex min-h-touch items-center">
@@ -161,7 +161,7 @@ export function MenuOverlay({ open, onClose }: MenuOverlayProps) {
                 </li>
               ))}
             </ul>
-            <p className="text-label text-fg-muted">{site.disclaimer.pt}</p>
+            <p className="text-fg-muted">{site.disclaimer.pt}</p>
           </div>
         </motion.div>
       )}

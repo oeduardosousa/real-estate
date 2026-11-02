@@ -49,11 +49,11 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="container-page flex flex-col gap-4 border-t border-line py-8 text-label text-fg-muted md:flex-row md:items-center md:justify-between">
+      <div className="container-page flex flex-col gap-4 border-t border-line py-8 text-fg-muted md:flex-row md:items-center md:justify-between">
         <p>
           {site.disclaimer.pt} <span lang="en">{site.disclaimer.en}</span>
         </p>
-        <ul className="flex gap-6">
+        <ul className="type-label flex gap-6">
           {legalLinks.map((link) => (
             <li key={link.href}>
               <TransitionLink href={link.href} className="inline-flex min-h-touch items-center hover:text-fg">

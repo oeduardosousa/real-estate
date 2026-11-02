@@ -37,7 +37,7 @@ export function MotionSwitch({ className = "" }: { className?: string }) {
         {option("Reduzidas", true)}
       </div>
       {lockedByOs && (
-        <p className="mt-3 max-w-measure text-label text-fg-muted">
+        <p className="mt-3 max-w-measure text-fg-muted">
           Seu sistema pede menos movimento, então as animações ficam reduzidas.
         </p>
       )}
