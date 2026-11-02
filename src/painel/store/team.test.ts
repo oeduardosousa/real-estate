@@ -37,10 +37,12 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+const mail = (name: string) => `${name.trim().toLowerCase().replace(/\s+/g, ".")}@curral.example`;
+
 describe("addMember", () => {
   it("adds a person, registers them and persists", async () => {
     const t = await fresh();
-    const result = t.addMember(helena, { name: "  Paula   Nunes ", role: "corretor", title: "Corretora, lançamentos" });
+    const result = t.addMember(helena, { name: "  Paula   Nunes ", email: mail("  Paula   Nunes "), role: "corretor", title: "Corretora, lançamentos" });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.value).toMatchObject({ id: "paula-nunes", name: "Paula Nunes", role: "corretor" });
@@ -51,14 +53,14 @@ describe("addMember", () => {
 
   it("keeps back-office staff out of the owner list", async () => {
     const t = await fresh();
-    t.addMember(helena, { name: "Davi Prado", role: "backoffice", title: "Back-office, contratos" });
+    t.addMember(helena, { name: "Davi Prado", email: mail("Davi Prado"), role: "backoffice", title: "Back-office, contratos" });
     expect(t.getPersona("davi-prado")).toBeDefined();
     expect(t.getOwnerCandidates().some((p) => p.id === "davi-prado")).toBe(false);
   });
 
   it("is reloaded from storage on the next page load", async () => {
     const first = await fresh();
-    first.addMember(helena, { name: "Paula Nunes", role: "corretor", title: "Corretora" });
+    first.addMember(helena, { name: "Paula Nunes", email: mail("Paula Nunes"), role: "corretor", title: "Corretora" });
     const second = await fresh();
     expect(second.getTeam()).toHaveLength(1);
     expect(second.getPersona("paula-nunes")).toBeDefined();
@@ -67,24 +69,37 @@ describe("addMember", () => {
   it("only the Diretoria manages the team", async () => {
     const t = await fresh();
     for (const actor of [bruno, tiago]) {
-      expect(t.addMember(actor, { name: "Paula Nunes", role: "corretor", title: "Corretora" })).toEqual({
+      expect(t.addMember(actor, { name: "Paula Nunes", email: mail("Paula Nunes"), role: "corretor", title: "Corretora" })).toEqual({
         ok: false,
         error: "forbidden",
       });
     }
   });
 
+  it("requires a valid, unique e-mail and stores it lower-cased", async () => {
+    const t = await fresh();
+    const base = { name: "Paula Nunes", role: "corretor", title: "Corretora" } as const;
+    expect(t.addMember(helena, { ...base, email: "" })).toEqual({ ok: false, error: "email_invalid" });
+    expect(t.addMember(helena, { ...base, email: "paula@" })).toEqual({ ok: false, error: "email_invalid" });
+    const added = t.addMember(helena, { ...base, email: " Paula@Curral.Example " });
+    expect(added.ok && added.value.email).toBe("paula@curral.example");
+    expect(t.addMember(helena, { name: "Outra Pessoa", role: "corretor", title: "x", email: "PAULA@curral.example" })).toEqual({
+      ok: false,
+      error: "email_taken",
+    });
+  });
+
   it("rejects short names, empty titles and duplicates, ignoring case", async () => {
     const t = await fresh();
-    expect(t.addMember(helena, { name: "Al", role: "corretor", title: "x" })).toEqual({ ok: false, error: "name_invalid" });
-    expect(t.addMember(helena, { name: "Paula Nunes", role: "corretor", title: " " })).toEqual({ ok: false, error: "title_invalid" });
-    expect(t.addMember(helena, { name: "camila drummond", role: "corretor", title: "x" })).toEqual({ ok: false, error: "name_taken" });
+    expect(t.addMember(helena, { name: "Al", email: mail("Al"), role: "corretor", title: "x" })).toEqual({ ok: false, error: "name_invalid" });
+    expect(t.addMember(helena, { name: "Paula Nunes", email: mail("Paula Nunes"), role: "corretor", title: " " })).toEqual({ ok: false, error: "title_invalid" });
+    expect(t.addMember(helena, { name: "camila drummond", email: mail("camila drummond"), role: "corretor", title: "x" })).toEqual({ ok: false, error: "name_taken" });
   });
 
   it("gives people with the same slug different ids", async () => {
     const t = await fresh();
-    const a = t.addMember(helena, { name: "João Silva", role: "corretor", title: "x" });
-    const b = t.addMember(helena, { name: "Joao Silva", role: "corretor", title: "x" });
+    const a = t.addMember(helena, { name: "João Silva", email: "joao1@curral.example", role: "corretor", title: "x" });
+    const b = t.addMember(helena, { name: "Joao Silva", email: "joao2@curral.example", role: "corretor", title: "x" });
     expect(a.ok && a.value.id).toBe("joao-silva");
     expect(b.ok && b.value.id).toBe("joao-silva-2");
   });
@@ -99,7 +114,7 @@ describe("addMember", () => {
 describe("removeMember", () => {
   it("removes an added person who owns no listings", async () => {
     const t = await fresh();
-    t.addMember(helena, { name: "Paula Nunes", role: "corretor", title: "Corretora" });
+    t.addMember(helena, { name: "Paula Nunes", email: mail("Paula Nunes"), role: "corretor", title: "Corretora" });
     expect(t.removeMember(helena, "paula-nunes", 0).ok).toBe(true);
     expect(t.getPersona("paula-nunes")).toBeUndefined();
   });
@@ -119,13 +134,13 @@ describe("removeMember", () => {
   it("does not hand a removed seed id to a new person", async () => {
     const t = await fresh();
     t.removeMember(helena, "camila-drummond", 0);
-    const added = t.addMember(helena, { name: "Camila Drummond", role: "corretor", title: "x" });
+    const added = t.addMember(helena, { name: "Camila Drummond", email: mail("Camila Drummond"), role: "corretor", title: "x" });
     expect(added.ok && added.value.id).toBe("camila-drummond-2");
   });
 
   it("refuses yourself, the last director, people with listings and non-directors", async () => {
     const t = await fresh();
-    t.addMember(helena, { name: "Paula Nunes", role: "corretor", title: "Corretora" });
+    t.addMember(helena, { name: "Paula Nunes", email: mail("Paula Nunes"), role: "corretor", title: "Corretora" });
     expect(t.removeMember(helena, "helena-vasconcelos", 0)).toEqual({ ok: false, error: "self" });
     expect(t.removeMember(helena, "paula-nunes", 2)).toEqual({ ok: false, error: "has_listings" });
     expect(t.removeMember(bruno, "paula-nunes", 0)).toEqual({ ok: false, error: "forbidden" });
@@ -138,7 +153,7 @@ describe("removeMember", () => {
 describe("resetTeam", () => {
   it("drops everyone added", async () => {
     const t = await fresh();
-    t.addMember(helena, { name: "Paula Nunes", role: "corretor", title: "Corretora" });
+    t.addMember(helena, { name: "Paula Nunes", email: mail("Paula Nunes"), role: "corretor", title: "Corretora" });
     t.resetTeam();
     expect(t.getTeam()).toEqual([]);
     expect(t.getPersona("paula-nunes")).toBeUndefined();

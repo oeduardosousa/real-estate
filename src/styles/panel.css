@@ -1106,3 +1106,101 @@ a.panel-button {
   border-radius: 50%;
   background: var(--ink);
 }
+
+/* Removal blocked: loud on purpose, sits right under the person. */
+.panel-callout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.9rem;
+  align-items: start;
+  padding: 1rem 1.15rem;
+  border: 2px solid var(--error);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--rose) 45%, var(--paper));
+  list-style: none;
+}
+.panel-callout-mark {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--error);
+  color: var(--paper);
+  font-weight: 700;
+}
+.panel-callout-title {
+  font-weight: 700;
+  color: var(--error);
+}
+.panel-callout-text {
+  margin-top: 0.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Simulated invitation e-mail. */
+.panel-invite {
+  margin-bottom: 1.5rem;
+  max-width: 44rem;
+}
+.panel-invite-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.panel-invite-sending {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.panel-invite-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+}
+:root[data-motion="full"] .panel-invite-spinner {
+  animation: panel-spin 0.8s linear infinite;
+}
+@keyframes panel-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.panel-mail {
+  border: 1px solid var(--line, currentColor);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--paper);
+}
+.panel-mail-meta {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem 1.15rem;
+  border-bottom: 1px solid var(--line, currentColor);
+  font-size: 0.875rem;
+}
+.panel-mail-meta > div {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 0.5rem;
+}
+.panel-mail-meta dt {
+  opacity: 0.65;
+}
+.panel-mail-meta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.panel-mail-body {
+  display: grid;
+  justify-items: start;
+  gap: 0.8rem;
+  padding: 1.25rem 1.15rem;
+}
+.panel-mail-accepted {
+  font-weight: 600;
+}

@@ -48,6 +48,8 @@ export interface Persona {
   role: Role;
   /** PT-BR job title shown in the panel. */
   title: string;
+  /** Work e-mail. Set for people added in the panel; the seed team has none. */
+  email?: string;
 }
 
 /** Who is performing an action. A persona satisfies this. */

@@ -11,6 +11,8 @@ export type TeamError =
   | "forbidden"
   | "name_invalid"
   | "title_invalid"
+  | "email_invalid"
+  | "email_taken"
   | "name_taken"
   | "not_found"
   | "self"
@@ -25,7 +27,13 @@ export const TITLE_MAX = 60;
 const stored = z.object({
   version: z.literal(1),
   members: z.array(
-    z.object({ id: z.string(), name: z.string(), role: z.enum(ROLES), title: z.string() }),
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      role: z.enum(ROLES),
+      title: z.string(),
+      email: z.string().optional(),
+    }),
   ),
   removed: z.array(z.string()).default([]),
 });
@@ -85,7 +93,7 @@ function uniqueId(name: string): string {
 
 export function addMember(
   actor: Actor,
-  input: { name: string; role: Role; title: string },
+  input: { name: string; email: string; role: Role; title: string },
 ): TeamResult<Persona> {
   if (typeof window === "undefined" || !can(actor, "manage_team")) return { ok: false, error: "forbidden" };
   ensureTeamLoaded();
@@ -94,12 +102,15 @@ export function addMember(
   const title = input.title.trim();
   if (name.length < NAME_MIN || name.length > NAME_MAX) return { ok: false, error: "name_invalid" };
   if (title.length === 0 || title.length > TITLE_MAX) return { ok: false, error: "title_invalid" };
+  const email = input.email.trim().toLowerCase();
+  if (!z.email().safeParse(email).success) return { ok: false, error: "email_invalid" };
   const lower = name.toLocaleLowerCase("pt-BR");
   if (allPersonas().some((persona) => persona.name.toLocaleLowerCase("pt-BR") === lower)) {
     return { ok: false, error: "name_taken" };
   }
+  if (allPersonas().some((persona) => persona.email === email)) return { ok: false, error: "email_taken" };
 
-  const person: Persona = { id: uniqueId(name), name, role: input.role, title };
+  const person: Persona = { id: uniqueId(name), name, role: input.role, title, email };
   commit([...members, person]);
   return { ok: true, value: person };
 }

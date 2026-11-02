@@ -1,11 +1,12 @@
 "use client";
 
-import { useId, useState, type FormEvent } from "react";
+import { Fragment, useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { can } from "../model/permissions";
 import { allPersonas, roleLabels, roleSummaries } from "../model/personas";
 import { ROLES, type Persona, type Role } from "../model/types";
 import { addMember, removeMember, NAME_MAX, TITLE_MAX, type TeamError } from "../store/team";
 import { usePanelState, useSession, useTeam } from "./hooks";
+import { InviteMail } from "./InviteMail";
 
 const addLabels: Record<Role, string> = {
   diretoria: "Adicionar diretor",
@@ -23,6 +24,8 @@ const teamErrors: Record<TeamError, string> = {
   forbidden: "Só a Diretoria gerencia a equipe.",
   name_invalid: "Informe o nome, com pelo menos 3 caracteres.",
   title_invalid: "Informe o cargo.",
+  email_invalid: "Informe um e-mail válido, como nome@empresa.com.br.",
+  email_taken: "Já existe alguém na equipe com esse e-mail.",
   name_taken: "Já existe alguém com esse nome na equipe.",
   not_found: "Essa pessoa não está mais na equipe.",
   self: "Você não pode remover a si mesmo. Troque de persona e peça a outra pessoa da Diretoria.",
@@ -30,24 +33,26 @@ const teamErrors: Record<TeamError, string> = {
   has_listings: "Antes de remover, passe os imóveis dessa pessoa para outro responsável, no editor do imóvel.",
 };
 
-function AddForm({ role, onDone }: { role: Role; onDone: (name: string) => void }) {
+function AddForm({ role, onDone }: { role: Role; onDone: (added: Persona | null) => void }) {
   const persona = useSession();
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [title, setTitle] = useState("");
   const [error, setError] = useState<TeamError | null>(null);
   const nameId = useId();
+  const emailId = useId();
   const titleId = useId();
 
   if (!persona) return null;
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    const result = addMember(persona, { name, role, title });
+    const result = addMember(persona, { name, email, role, title });
     if (!result.ok) {
       setError(result.error);
       return;
     }
-    onDone(result.value.name);
+    onDone(result.value);
   };
 
   return (
@@ -64,6 +69,20 @@ function AddForm({ role, onDone }: { role: Role; onDone: (name: string) => void 
             autoFocus
           />
         </div>
+        <div className="panel-field">
+          <label htmlFor={emailId}>E-mail</label>
+          <input
+            id={emailId}
+            type="email"
+            value={email}
+            autoComplete="off"
+            placeholder="nome@empresa.com.br"
+            onChange={(event) => setEmail(event.target.value)}
+            aria-invalid={error === "email_invalid" || error === "email_taken" ? true : undefined}
+          />
+        </div>
+      </div>
+      <div className="panel-form-row">
         <div className="panel-field">
           <label htmlFor={titleId}>Cargo</label>
           <input
@@ -83,9 +102,9 @@ function AddForm({ role, onDone }: { role: Role; onDone: (name: string) => void 
       )}
       <div className="panel-actions">
         <button type="submit" className="panel-button panel-button-primary">
-          Adicionar à equipe
+          Cadastrar e enviar convite
         </button>
-        <button type="button" className="panel-link" onClick={() => onDone("")}>
+        <button type="button" className="panel-link" onClick={() => onDone(null)}>
           Cancelar
         </button>
       </div>
@@ -112,6 +131,7 @@ function Member({
       <span className="panel-member-text">
         <span className="panel-persona-name">{person.name}</span>
         <span className="panel-muted">{person.title}</span>
+        {person.email && <span className="panel-muted">{person.email}</span>}
         {person.role !== "backoffice" && (
           <span className="panel-muted">
             {listingCount === 1 ? "1 imóvel" : `${listingCount} imóveis`}
@@ -132,6 +152,25 @@ function Member({
   );
 }
 
+/** Shown right under the person who cannot be removed yet. Loud on purpose: it blocks the action. */
+function RemovalBlocked({ person }: { person: Persona }) {
+  const ref = useRef<HTMLLIElement>(null);
+  useEffect(() => {
+    ref.current?.scrollIntoView({ block: "nearest" });
+  }, []);
+  return (
+    <li ref={ref} role="alert" className="panel-callout">
+      <span className="panel-callout-mark" aria-hidden="true">
+        !
+      </span>
+      <div>
+        <p className="panel-callout-title">Remoção bloqueada: {person.name} ainda tem imóveis</p>
+        <p className="panel-callout-text">{teamErrors.has_listings}</p>
+      </div>
+    </li>
+  );
+}
+
 /** Equipe: everyone in the company, split by role. Diretoria adds and removes people. */
 export function Team() {
   const persona = useSession();
@@ -139,6 +178,9 @@ export function Team() {
   useTeam();
   const [adding, setAdding] = useState<Role | null>(null);
   const [notice, setNotice] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
+  const [invite, setInvite] = useState<Persona | null>(null);
+  /** Person whose removal was refused because they still own listings. */
+  const [blockedId, setBlockedId] = useState<string | null>(null);
 
   if (!persona) return null;
   const manages = can(persona, "manage_team");
@@ -147,6 +189,11 @@ export function Team() {
 
   const remove = (person: Persona) => {
     const result = removeMember(persona, person.id, countFor(person.id));
+    setBlockedId(!result.ok && result.error === "has_listings" ? person.id : null);
+    if (!result.ok && result.error === "has_listings") {
+      setNotice(null);
+      return;
+    }
     setNotice(
       result.ok
         ? { tone: "ok", text: `${person.name} saiu da equipe.` }
@@ -168,6 +215,8 @@ export function Team() {
       <p role="status" className={notice?.tone === "error" ? "panel-error" : "panel-muted"}>
         {notice?.text}
       </p>
+
+      {invite && <InviteMail key={invite.id} person={invite} inviter={persona} onClose={() => setInvite(null)} />}
 
       {ROLES.map((role) => {
         const people = everyone.filter((person) => person.role === role);
@@ -197,22 +246,26 @@ export function Team() {
             {adding === role && (
               <AddForm
                 role={role}
-                onDone={(name) => {
+                onDone={(added) => {
                   setAdding(null);
-                  if (name) setNotice({ tone: "ok", text: `${name} entrou na equipe.` });
+                  if (!added) return;
+                  setNotice({ tone: "ok", text: `${added.name} entrou na equipe.` });
+                  setInvite(added);
                 }}
               />
             )}
 
             <ul className="panel-member-list">
               {people.map((person) => (
-                <Member
-                  key={person.id}
-                  person={person}
-                  listingCount={countFor(person.id)}
-                  canRemove={manages && person.id !== persona.id}
-                  onRemove={remove}
-                />
+                <Fragment key={person.id}>
+                  <Member
+                    person={person}
+                    listingCount={countFor(person.id)}
+                    canRemove={manages && person.id !== persona.id}
+                    onRemove={remove}
+                  />
+                  {blockedId === person.id && <RemovalBlocked person={person} />}
+                </Fragment>
               ))}
             </ul>
           </section>
