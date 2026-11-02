@@ -16,7 +16,7 @@ export function FeaturedProperties() {
                 <span className="dot" /> Imóveis em destaque
               </p>
             </Reveal>
-            <Heading id="destaques-titulo" className="t-display section-title" text="Seis imóveis para *olhar com calma*." />
+            <Heading id="destaques-titulo" className="t-display section-title" text="Imóveis para *olhar com calma*." />
           </div>
           <Reveal className="section-aside">
             <TransitionLink href="/imoveis" className="link">
