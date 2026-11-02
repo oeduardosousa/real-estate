@@ -1,4 +1,5 @@
-import type { ListingCore } from "./types";
+import { listingDetails } from "./listing-details";
+import type { Listing, ListingCore } from "./types";
 
 /**
  * The 12 fictional listings from BRIEF.md. Only the facts in the brief's table are set here;
@@ -25,3 +26,10 @@ export function getListing(slug: string) {
 }
 
 export const featuredListings = listings.filter((listing) => listing.featured);
+
+/** The full record (core facts + detail content) for one listing. */
+export function getListingDetail(slug: string): Listing | undefined {
+  const core = getListing(slug);
+  const extras = listingDetails[slug];
+  return core && extras ? { ...core, ...extras } : undefined;
+}

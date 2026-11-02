@@ -13,19 +13,8 @@ export interface Coordinates {
   lng: number;
 }
 
-export interface ListingImage {
-  /** Path under /public. Originals stay in git-ignored raw-assets/. */
-  src: string;
-  /** PT-BR description of the room or view. */
-  alt: string;
-  width: number;
-  height: number;
-  /** Set when the image is AI-rendered or illustrative; shown as "Imagem ilustrativa". */
-  illustrative?: boolean;
-}
-
-/** The complete listing contract (BRIEF.md "Listings"). */
-export interface Listing {
+/** What BRIEF.md already fixes for each listing (the table in "Listings"). */
+export interface ListingCore {
   id: number;
   slug: string;
   title: string;
@@ -33,46 +22,38 @@ export interface Listing {
   purpose: ListingPurpose;
   /** BRL. Total price for venda, monthly rent for aluguel. */
   price: number;
-  /** BRL per month. */
-  condominio?: number;
-  /** BRL per year. */
-  iptu?: number;
   /** Built area in m². */
   area: number;
   bedrooms: number;
+  neighborhood: string;
+  city: string;
+  featured: boolean;
+}
+
+/** Detail fields written in the content phase. Merged with {@link ListingCore} by `getListingDetail`. */
+export interface ListingExtras {
   suites: number;
   bathrooms: number;
   parking: number;
-  neighborhood: string;
-  city: string;
+  /** BRL per month. */
+  condominio: number;
+  /** BRL per year. */
+  iptu: number;
+  /** Approximate, used only as setting (BRIEF.md). */
   coordinates: Coordinates;
   features: string[];
-  description: string;
-  images: ListingImage[];
+  /** Short PT-BR paragraphs. */
+  description: string[];
+  /** One sentence for meta tags and the detail header. */
+  summary: string;
+  /** PT-BR descriptions of the rooms and views. Until photography exists each one is drawn as a Scene. */
+  views: string[];
   /** Id of a TeamMember. */
   agent: string;
-  featured: boolean;
-  floorplan?: ListingImage;
 }
 
-/**
- * What BRIEF.md already fixes for each listing. The content phase fills the rest of
- * {@link Listing} (description, images, coordinates, features, agent, extra costs).
- */
-export type ListingCore = Pick<
-  Listing,
-  | "id"
-  | "slug"
-  | "title"
-  | "type"
-  | "purpose"
-  | "price"
-  | "area"
-  | "bedrooms"
-  | "neighborhood"
-  | "city"
-  | "featured"
->;
+/** The complete listing contract. */
+export type Listing = ListingCore & ListingExtras;
 
 export interface TeamMember {
   id: string;

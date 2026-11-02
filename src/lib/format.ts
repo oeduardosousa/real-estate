@@ -19,3 +19,13 @@ export function formatSpecs(listing: Pick<ListingCore, "area" | "bedrooms">): st
 }
 
 export const purposeLabel = { venda: "Venda", aluguel: "Aluguel" } as const;
+
+/** "R$ 7.800" for fees and costs that carry no purpose suffix. */
+export function formatBRL(value: number): string {
+  return brl.format(value).replace(/\s/g, " ");
+}
+
+/** Compact sale prices for filter labels: "R$ 3 mi". */
+export function formatMillions(value: number): string {
+  return `R$ ${value / 1_000_000} mi`;
+}
