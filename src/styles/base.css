@@ -430,3 +430,19 @@ summary,
   /* The open sheet never scrolls the page behind it. */
   overscroll-behavior: contain;
 }
+
+/* Touch: small text links get a 44px-tall hit area without changing the layout */
+@media (pointer: coarse) {
+  .link,
+  .footer-link,
+  .crumbs a {
+    position: relative;
+  }
+  .link::after,
+  .footer-link::after,
+  .crumbs a::after {
+    content: "";
+    position: absolute;
+    inset: -12px -6px;
+  }
+}

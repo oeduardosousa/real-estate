@@ -5,7 +5,11 @@ import { fontVariables } from "@/lib/fonts";
 import { motionInitScript } from "@/lib/motion/init-script";
 import "./globals.css";
 
+// Vercel injects the production host at build time; locally the card URLs fall back to localhost.
+const host = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+
 export const metadata: Metadata = {
+  metadataBase: new URL(host ? `https://${host}` : "http://localhost:3000"),
   title: { default: `${site.name} — ${site.tagline}`, template: `%s | ${site.name}` },
   description: site.tagline,
 };
