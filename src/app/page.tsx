@@ -1,10 +1,5 @@
-import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
-import { site } from "@/data";
+import { Hero } from "@/components/home/Hero";
 
 export default function HomePage() {
-  return (
-    <PagePlaceholder label="Início" title={site.name}>
-      {site.tagline}
-    </PagePlaceholder>
-  );
+  return <Hero />;
 }

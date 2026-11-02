@@ -233,3 +233,80 @@
   background-color: var(--pedra);
   box-shadow: inset 0 -1px 0 var(--line);
 }
+
+/* ------------------------------------------------------------------ */
+/* Hero intro (CSS-driven so the LCP headline never waits on JavaScript) */
+/* ------------------------------------------------------------------ */
+:root {
+  --settle: 1.12;
+}
+@media (max-width: 1023px), (hover: none) {
+  :root {
+    --settle: 1.06;
+  }
+}
+
+:root[data-motion="full"] .hero-settle {
+  transform: scale(var(--settle));
+}
+
+.hero-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* Room for descenders and the accent on "ê"-like glyphs inside the mask. */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.hero-word > span {
+  display: inline-block;
+  animation: word-rise var(--duration-cinematic) var(--ease-cinema) both;
+  animation-delay: calc(var(--i, 0) * var(--stagger-line) + 0.15s);
+}
+
+.intro-fade {
+  animation: intro-fade var(--duration-slow) var(--ease-cinema) both;
+  animation-delay: var(--intro-delay, 0s);
+}
+
+@keyframes word-rise {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes intro-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Reduced motion: no movement, a 200ms fade only. */
+:root[data-motion="reduced"] .hero-word > span,
+:root[data-motion="reduced"] .intro-fade {
+  animation: fade-in var(--duration-slow) linear both;
+  animation-delay: 0s;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hold the intro while the first-visit loader plays. Must come after the animation shorthands above. */
+:root[data-loader="on"] .intro-wait {
+  animation-play-state: paused;
+}

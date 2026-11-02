@@ -61,10 +61,10 @@ function smooth(points: readonly Point[]): string {
     const p1 = points[i];
     const p2 = points[i + 1];
     const p3 = points[Math.min(i + 2, points.length - 1)];
-    const c1x = p1[0] + (p2[0] - p0[0]) / 6;
-    const c1y = p1[1] + (p2[1] - p0[1]) / 6;
-    const c2x = p2[0] - (p3[0] - p1[0]) / 6;
-    const c2y = p2[1] - (p3[1] - p1[1]) / 6;
+    const c1x = p1[0] + (p2[0] - p0[0]) / 8;
+    const c1y = p1[1] + (p2[1] - p0[1]) / 8;
+    const c2x = p2[0] - (p3[0] - p1[0]) / 8;
+    const c2y = p2[1] - (p3[1] - p1[1]) / 8;
     d += ` C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2[0]} ${p2[1]}`;
   }
   return d;
