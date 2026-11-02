@@ -6,6 +6,7 @@
 - Obtain approval before any deploy.
 - Use emil-design-eng for animations and interactions; use Impeccable for design and UI audits.
 - No backend, database or payments. Forms are demo-only: validated (zod), success state, nothing stored or sent.
+- The business view (`/painel`, see PAINEL.md) is a demo: simulated login, data kept only in the visitor's browser (localStorage/IndexedDB), no server. Personas beyond BRIEF.md's team are allowed there (invented back-office staff).
 - Motion: GSAP via useGSAP with cleanup; animate transform/opacity only; respect prefers-reduced-motion (gsap.matchMedia).
 - Lighter motion variants on mobile/touch; one Lenis instance synced with ScrollTrigger; no custom cursor (removed by the user).
 - Performance budget (mobile): LCP < 2.5s, CLS < 0.1, INP < 200ms; lazy-load heavy assets.
